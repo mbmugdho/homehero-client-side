@@ -10,7 +10,7 @@
     "hourly_rate": 20,
     "duration": "2-4 hours",
     "location": "Dhaka, Bangladesh",
-    "image": "https://i.ibb.co/4Wn5Lhs/cleaning.jpg",
+    "image": "https://ik.imagekit.io/azfnpskmy/homehero/Home%20Cleaning%20Service.jpeg",
     "provider": {
       "name": "Saima Cleaning Crew",
       "experience": "5 years",
@@ -32,7 +32,7 @@
     "hourly_rate": 25,
     "duration": "1-3 hours",
     "location": "Chittagong, Bangladesh",
-    "image": "https://i.ibb.co/ZVZ7Mqp/plumbing.jpg",
+    "image": "https://ik.imagekit.io/azfnpskmy/homehero/Plumbing%20Repair.jpg",
     "provider": {
       "name": "Rahim Pipes & Fixers",
       "experience": "7 years",
@@ -54,7 +54,7 @@
     "hourly_rate": 30,
     "duration": "2-5 hours",
     "location": "Dhaka, Bangladesh",
-    "image": "https://i.ibb.co/QX9vPKR/electrician.jpg",
+    "image": "https://ik.imagekit.io/azfnpskmy/homehero/Electrical%20Maintenance.jpeg",
     "provider": {
       "name": "Smart Electric Works",
       "experience": "6 years",
@@ -76,7 +76,7 @@
     "hourly_rate": 28,
     "duration": "3-6 hours",
     "location": "Sylhet, Bangladesh",
-    "image": "https://i.ibb.co/NFbBmgS/carpentry.jpg",
+    "image": "https://ik.imagekit.io/azfnpskmy/homehero/Carpentry%20&%20Furniture%20Fix.jpg",
     "provider": {
       "name": "WoodCraft Masters",
       "experience": "8 years",
@@ -98,7 +98,7 @@
     "hourly_rate": 22,
     "duration": "4-8 hours",
     "location": "Dhaka, Bangladesh",
-    "image": "https://i.ibb.co/vxKT9hm/painting.jpg",
+    "image": "https://ik.imagekit.io/azfnpskmy/homehero/Home%20Painting.jpg",
     "provider": {
       "name": "ColorTech Painters",
       "experience": "10 years",
@@ -120,7 +120,7 @@
     "hourly_rate": 35,
     "duration": "2-4 hours",
     "location": "Dhaka, Bangladesh",
-    "image": "https://i.ibb.co/3skPfzh/ac-repair.jpg",
+    "image": "https://ik.imagekit.io/azfnpskmy/homehero/AC%20Repair%20&%20Installation.jpg",
     "provider": {
       "name": "CoolAir Experts",
       "experience": "8 years",
@@ -142,7 +142,7 @@
     "hourly_rate": 18,
     "duration": "2 hours",
     "location": "Khulna, Bangladesh",
-    "image": "https://i.ibb.co/xzjWWvx/pest-control.jpg",
+    "image": "https://ik.imagekit.io/azfnpskmy/homehero/Pest%20Control.jpeg",
     "provider": {
       "name": "EcoSafe Pest Removal",
       "experience": "6 years",
@@ -164,7 +164,7 @@
     "hourly_rate": 15,
     "duration": "3 hours",
     "location": "Dhaka, Bangladesh",
-    "image": "https://i.ibb.co/hcsmJ4C/gardening.jpg",
+    "image": "https://ik.imagekit.io/azfnpskmy/homehero/Gardening%20&%20Lawn%20Care.jpeg",
     "provider": {
       "name": "Green Touch Gardeners",
       "experience": "5 years",
@@ -186,7 +186,7 @@
     "hourly_rate": 40,
     "duration": "3-5 hours",
     "location": "Dhaka, Bangladesh",
-    "image": "https://i.ibb.co/jWcw1HF/cctv.jpg",
+    "image": "https://ik.imagekit.io/azfnpskmy/homehero/CCTV%20Installation.jpeg",
     "provider": {
       "name": "SafeVision Tech",
       "experience": "6 years",
@@ -208,7 +208,7 @@
     "hourly_rate": 25,
     "duration": "1-3 hours",
     "location": "Dhaka, Bangladesh",
-    "image": "https://i.ibb.co/0Ztr3Fp/computer-repair.jpg",
+    "image": "https://ik.imagekit.io/azfnpskmy/homehero/Computer%20Repair.jpg",
     "provider": {
       "name": "TechEase Solutions",
       "experience": "5 years",
@@ -230,7 +230,7 @@
     "hourly_rate": 45,
     "duration": "5-10 hours",
     "location": "Dhaka, Bangladesh",
-    "image": "https://i.ibb.co/hmmkY3T/moving.jpg",
+    "image": "https://ik.imagekit.io/azfnpskmy/homehero/Home%20Shifting%20Service.jpg",
     "provider": {
       "name": "EasyMove Logistics",
       "experience": "9 years",
@@ -252,7 +252,7 @@
     "hourly_rate": 18,
     "duration": "2 hours",
     "location": "Gazipur, Bangladesh",
-    "image": "https://i.ibb.co/zs5Ps6Y/water-tank.jpg",
+    "image": "https://ik.imagekit.io/azfnpskmy/homehero/Water%20Tank%20Cleaning.jpg",
     "provider": {
       "name": "HydroPro Services",
       "experience": "4 years",
@@ -274,7 +274,7 @@
     "hourly_rate": 50,
     "duration": "2-5 hours",
     "location": "Dhaka, Bangladesh",
-    "image": "https://i.ibb.co/Fm5prK7/interior.jpg",
+    "image": "https://ik.imagekit.io/azfnpskmy/homehero/Interior%20Design%20Consultation.jpg",
     "provider": {
       "name": "Artistry Interiors",
       "experience": "9 years",
@@ -296,7 +296,7 @@
     "hourly_rate": 28,
     "duration": "3 hours",
     "location": "Dhaka, Bangladesh",
-    "image": "https://i.ibb.co/WBqkPp5/waterproofing.jpg",
+    "image": "https://ik.imagekit.io/azfnpskmy/homehero/Roof%20Waterproofing.jpeg",
     "provider": {
       "name": "AquaShield Coats",
       "experience": "7 years",
@@ -318,7 +318,7 @@
     "hourly_rate": 22,
     "duration": "1 hour",
     "location": "Dhaka, Bangladesh",
-    "image": "https://i.ibb.co/YNMCbQZ/mobile-repair.jpg",
+    "image": "https://ik.imagekit.io/azfnpskmy/homehero/Mobile%20Phone%20Repair.jpeg",
     "provider": {
       "name": "MobileFix Center",
       "experience": "5 years",
@@ -340,7 +340,7 @@
     "hourly_rate": 20,
     "duration": "1-2 hours",
     "location": "Chittagong, Bangladesh",
-    "image": "https://i.ibb.co/8zPz5vd/appliance-setup.jpg",
+    "image": "https://ik.imagekit.io/azfnpskmy/homehero/Home%20Appliance%20Setup.jpg",
     "provider": {
       "name": "HomeFix Technicians",
       "experience": "4 years",
@@ -362,7 +362,7 @@
     "hourly_rate": 26,
     "duration": "3-5 hours",
     "location": "Dhaka, Bangladesh",
-    "image": "https://i.ibb.co/jLGs8RG/floor-polishing.jpg",
+    "image": "https://ik.imagekit.io/azfnpskmy/homehero/Tile%20&%20Floor%20Polishing.jpg",
     "provider": {
       "name": "ShinePro Surfaces",
       "experience": "6 years",
@@ -384,7 +384,7 @@
     "hourly_rate": 18,
     "duration": "2-6 hours",
     "location": "Dhaka, Bangladesh",
-    "image": "https://i.ibb.co/WH4rhvL/cooking.jpg",
+    "image": "https://ik.imagekit.io/azfnpskmy/homehero/Cooking%20&%20Catering%20Help.jpg",
     "provider": {
       "name": "TastePro Kitchen Crew",
       "experience": "5 years",
@@ -406,7 +406,7 @@
     "hourly_rate": 10,
     "duration": "24 hours",
     "location": "Dhaka, Bangladesh",
-    "image": "https://i.ibb.co/f1K0R1b/laundry.jpg",
+    "image": "https://ik.imagekit.io/azfnpskmy/homehero/import%20React%20from%20'react'.jpeg?updatedAt=1762931655237",
     "provider": {
       "name": "WashyPro Laundry",
       "experience": "4 years",
@@ -428,7 +428,7 @@
     "hourly_rate": 15,
     "duration": "1-2 hours",
     "location": "Dhaka, Bangladesh",
-    "image": "https://i.ibb.co/WnFV6NQ/tutor.jpg",
+    "image": "https://ik.imagekit.io/azfnpskmy/homehero/Home%20Tutoring.jpg?updatedAt=1762931655698",
     "provider": {
       "name": "StudyNest Tutors",
       "experience": "4 years",
