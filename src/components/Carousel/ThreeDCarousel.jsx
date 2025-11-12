@@ -68,7 +68,7 @@ export default function ThreeDCarousel() {
   const step = 360 / items.length;
 
   return (
-    <section className="container-x py-16">
+    <section className="container-x py-2">
       <div className="relative mx-auto h-[460px] sm:h-[520px] [perspective:1100px]">
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center -z-10">
           <div className="w-[520px] h-[520px] rounded-full bg-[radial-gradient(closest-side,rgba(192,93,185,0.22),transparent_65%)]" />

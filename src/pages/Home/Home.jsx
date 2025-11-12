@@ -79,7 +79,7 @@ const Home = () => {
               <div className="rounded-xl border border-white/10 bg-white/5 p-4">
                 <div className="text-white font-semibold">Cleaning</div>
                 <div className="text-white/70 text-sm">
-                  Deep cleans, move-outs, regular upkeep
+                  Deep cleans, move‑outs, regular upkeep
                 </div>
               </div>
               <div className="rounded-xl border border-white/10 bg-white/5 p-4">
@@ -103,7 +103,7 @@ const Home = () => {
             </div>
 
             <div className="mt-6 text-white/70 text-sm">
-              Can't find what you need?{' '}
+              Can’t find what you need?{' '}
               <Link
                 to="/services"
                 className="underline underline-offset-4 decoration-[hsl(var(--a))]"
@@ -114,7 +114,33 @@ const Home = () => {
           </div>
         </div>
       </section>
-      <ThreeDCarousel></ThreeDCarousel>
+
+      <ThreeDCarousel />
+
+      <section className="container-x py-16">
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-8 backdrop-blur-sm">
+          <div className="max-w-2xl mx-auto text-center">
+            <h3 className="text-cosmic text-3xl font-extrabold">Get the best of HomeHero</h3>
+            <p className="text-white/80 mt-2">Tips, seasonal offers, and local service updates.</p>
+            <form className="mt-6">
+              <fieldset className="w-full max-w-lg mx-auto">
+                <label className="block text-white/80 mb-2">Enter your email address</label>
+                <div className="join gap-3 w-full">
+                  <input
+                    type="email"
+                    required
+                    placeholder="your email address"
+                    className="input input-bordered join-item w-full rounded-full bg-white/90 text-[hsl(var(--bc))]"
+                  /> 
+                  <button className=" cosmic-btn join-item whitespace-nowrap">
+                    Subscribe
+                  </button>
+                </div>
+              </fieldset>
+            </form>
+          </div>
+        </div>
+      </section>
     </div>
   )
 }
