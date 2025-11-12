@@ -18,7 +18,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      // ✅ Pass both email and password
+      
       await login({ email: form.email, password: form.password })
 
       Swal.fire({

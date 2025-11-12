@@ -25,9 +25,11 @@ const RequireAuth = ({ children }) => {
       </div>
     )
   }
+
   if (!isAuthed) {
     return <Navigate to="/login" replace state={{ from: location.pathname }} />
   }
+
   return children
 }
 
@@ -35,18 +37,15 @@ const fetchServices = async () => {
   const res = await fetch('/services.json', {
     headers: { 'Content-Type': 'application/json' },
   })
-  if (!res.ok) {
+  if (!res.ok)
     throw new Response('Failed to load services', { status: res.status })
-  }
   return res.json()
 }
 
 const fetchServiceById = async ({ params }) => {
   const data = await fetchServices()
   const svc = data.find((s) => s.id === params.id)
-  if (!svc) {
-    throw new Response('Service not found', { status: 404 })
-  }
+  if (!svc) throw new Response('Service not found', { status: 404 })
   return svc
 }
 
@@ -57,7 +56,6 @@ const router = createBrowserRouter([
     errorElement: <NotFound />,
     children: [
       { index: true, element: <Home /> },
-
       {
         path: 'services',
         element: <Services />,
@@ -70,9 +68,14 @@ const router = createBrowserRouter([
         loader: fetchServiceById,
         errorElement: <NotFound />,
       },
-
-      { path: 'add-service', element: <AddService /> },
-
+      {
+        path: 'add-service',
+        element: (
+          <RequireAuth>
+            <AddService />
+          </RequireAuth>
+        ),
+      },
       {
         path: 'my-services',
         element: (
@@ -97,10 +100,8 @@ const router = createBrowserRouter([
           </RequireAuth>
         ),
       },
-
       { path: 'login', element: <Login /> },
       { path: 'register', element: <Register /> },
-
       { path: '*', element: <NotFound /> },
     ],
   },

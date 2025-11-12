@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
+import { motion } from 'framer-motion'
 
 const topLinkClass = ({ isActive }) =>
   `px-3 py-2 rounded-lg font-medium transition-all duration-200 ${
@@ -18,7 +19,7 @@ const drawerLinkClass = ({ isActive }) =>
 
 const Navbar = () => {
   const location = useLocation()
-  const { isAuthed = false, logout, user } = useAuth() || {}
+  const { isAuthed, logout, user } = useAuth?.() || { isAuthed: false }
 
   const closeDrawer = () => {
     const el = document.getElementById('navbar-drawer')
@@ -29,13 +30,30 @@ const Navbar = () => {
     closeDrawer()
   }, [location.pathname])
 
+  const slideDown = {
+    hidden: { y: -100, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: { duration: 1, ease: 'easeOut' },
+    },
+  }
+
   return (
     <div className="drawer drawer-end z-50">
       <input id="navbar-drawer" type="checkbox" className="drawer-toggle" />
 
-      <div className="drawer-content">
+      <motion.div
+        className="drawer-content"
+        variants={slideDown}
+        initial="hidden"
+        animate="visible"
+      >
         <div className="navbar sticky top-0 border-b border-white/10 text-white glass-tint backdrop-blur-md shadow-[0_1px_10px_hsl(var(--p)/0.3)]">
           <div className="container-x w-full flex items-center justify-between">
+
+
+
             <Link
               to="/"
               className="flex items-center gap-2.5 text-lg sm:text-xl font-extrabold tracking-tight"
@@ -54,18 +72,26 @@ const Navbar = () => {
               <span className="text-white font-extrabold">HomeHero</span>
             </Link>
 
-            <nav aria-label="Primary" className="hidden md:flex items-center gap-2">
+            <nav
+              aria-label="Primary"
+              className="hidden md:flex items-center gap-2"
+            >
               <NavLink to="/" end className={topLinkClass}>
                 Home
               </NavLink>
               <NavLink to="/services" className={topLinkClass}>
                 Services
               </NavLink>
-              
+              <NavLink to="/add-service" className={topLinkClass}>
+                Add Service
+              </NavLink>
               {isAuthed && (
                 <>
                   <NavLink to="/my-services" className={topLinkClass}>
                     My Services
+                  </NavLink>
+                  <NavLink to="/my-bookings" className={topLinkClass}>
+                    My Bookings
                   </NavLink>
                 </>
               )}
@@ -85,41 +111,56 @@ const Navbar = () => {
                   </Link>
                 </div>
               ) : (
-                <div className="hidden md:flex items-center gap-2">
-                  <div className="dropdown dropdown-end">
-                    <label tabIndex={0} className="cosmic-btn btn-circle avatar">
-                      <div className="w-9 rounded-full ring-2 ring-[hsl(var(--a))/0.7]">
-                        <img
-                          alt="User avatar"
-                          src={user?.photoURL || user?.avatar || 'https://i.pravatar.cc/72?img=32'}
-                        />
-                      </div>
-                    </label>
-                    <ul
-                      tabIndex={0}
-                      className="menu menu-sm dropdown-content bg-[hsl(var(--n))] text-white rounded-box z-[1] mt-3 w-52 p-2 shadow-lg border border-white/10"
-                    >
-                      <li>
-                        <NavLink to="/profile">Profile</NavLink>
-                      </li>
-                      <li>
-                        <NavLink to="/my-services">My Services</NavLink>
-                      </li>
-                      <li>
-                        <button type="button" onClick={logout}>
-                          Logout
-                        </button>
-                      </li>
-                    </ul>
-                  </div>
+                <div className="hidden md:block dropdown dropdown-end">
+                  <label tabIndex={0} className="cosmic-btn btn-circle avatar">
+                    <div className="w-9 rounded-full ring-2 ring-[hsl(var(--a))/0.7]">
+                      <img
+                        alt="User avatar"
+                        src={user?.avatar || 'https://i.pravatar.cc/72?img=32'}
+                      />
+                    </div>
+                  </label>
+                  <ul
+                    tabIndex={0}
+                    className="menu menu-sm dropdown-content bg-[hsl(var(--n))] text-white rounded-box z-[1] mt-3 w-52 p-2 shadow-lg border border-white/10"
+                  >
+                    <li>
+                      <NavLink to="/profile">Profile</NavLink>
+                    </li>
+                    <li>
+                      <NavLink to="/my-bookings">My Bookings</NavLink>
+                    </li>
+                    <li>
+                      <NavLink to="/my-services">My Services</NavLink>
+                    </li>
+                    <li>
+                      <button type="button" onClick={logout}>
+                        Logout
+                      </button>
+                    </li>
+                  </ul>
                 </div>
               )}
 
-              
+              <label
+                htmlFor="navbar-drawer"
+                className="md:hidden btn btn-ghost text-white"
+                aria-label="Open menu"
+              >
+                <svg
+                  width="22"
+                  height="22"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <path d="M3 6h16M3 12h16M3 18h16" />
+                </svg>
+              </label>
             </div>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       <div className="drawer-side z-[999]">
         <label htmlFor="navbar-drawer" className="drawer-overlay" />
@@ -130,7 +171,13 @@ const Navbar = () => {
             onClick={closeDrawer}
           >
             <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-gradient-to-br from-[hsl(var(--p))] to-[hsl(var(--s))] shadow-md">
-              <svg width="20" height="20" fill="none" stroke="white" strokeWidth="2.2">
+              <svg
+                width="20"
+                height="20"
+                fill="none"
+                stroke="white"
+                strokeWidth="2.2"
+              >
                 <path d="M3 10.5 12 3l9 7.5V21a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-10.5z" />
               </svg>
             </div>
@@ -139,17 +186,30 @@ const Navbar = () => {
 
           <ul className="menu space-y-1">
             <li>
-              <NavLink to="/" end className={drawerLinkClass} onClick={closeDrawer}>
+              <NavLink
+                to="/"
+                end
+                className={drawerLinkClass}
+                onClick={closeDrawer}
+              >
                 Home
               </NavLink>
             </li>
             <li>
-              <NavLink to="/services" className={drawerLinkClass} onClick={closeDrawer}>
+              <NavLink
+                to="/services"
+                className={drawerLinkClass}
+                onClick={closeDrawer}
+              >
                 Services
               </NavLink>
             </li>
             <li>
-              <NavLink to="/add-service" className={drawerLinkClass} onClick={closeDrawer}>
+              <NavLink
+                to="/add-service"
+                className={drawerLinkClass}
+                onClick={closeDrawer}
+              >
                 Add Service
               </NavLink>
             </li>
@@ -157,18 +217,21 @@ const Navbar = () => {
             {isAuthed ? (
               <>
                 <li>
-                  <NavLink to="/my-services" className={drawerLinkClass} onClick={closeDrawer}>
+                  <NavLink
+                    to="/my-services"
+                    className={drawerLinkClass}
+                    onClick={closeDrawer}
+                  >
                     My Services
                   </NavLink>
                 </li>
                 <li>
-                  <NavLink to="/my-bookings" className={drawerLinkClass} onClick={closeDrawer}>
+                  <NavLink
+                    to="/my-bookings"
+                    className={drawerLinkClass}
+                    onClick={closeDrawer}
+                  >
                     My Bookings
-                  </NavLink>
-                </li>
-                <li>
-                  <NavLink to="/profile" className={drawerLinkClass} onClick={closeDrawer}>
-                    Profile
                   </NavLink>
                 </li>
                 <li className="mt-2 border-t border-white/10" />

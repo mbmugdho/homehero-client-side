@@ -45,8 +45,6 @@
     inset: 0;
     z-index: -1;
     pointer-events: none;
-    background: url('https://uploads-ssl.webflow.com/5f6cbf6ac1f6d255a1ad28a9/5f6f9b3f1f1e8050ba56d6a3_noise.png')
-      repeat;
     opacity: 0.12;
     mix-blend-mode: multiply;
   }

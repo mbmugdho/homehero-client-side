@@ -3,10 +3,38 @@ import { Swiper, SwiperSlide } from 'swiper/react'
 import { Autoplay, Pagination } from 'swiper/modules'
 import 'swiper/css'
 import 'swiper/css/pagination'
+import { motion } from 'framer-motion'
 
 import imgPlumbing from '../../assets/hero-plumbing.jpg'
 import imgElectrical from '../../assets/hero-electrical.jpg'
 import imgCleaning from '../../assets/hero-cleaning.jpg'
+
+const slides = [
+  {
+    img: imgPlumbing,
+    title: 'Plumbing Pros On-Demand',
+    desc: 'Fix leaks fast with vetted plumbers available near you.',
+    btnPrimary: { text: 'Find Plumbers', to: '/services?cat=Plumbing' },
+    btnSecondary: { text: 'All Services', to: '/services' },
+    alt: 'Plumber fixing a sink',
+  },
+  {
+    img: imgElectrical,
+    title: 'Safe, Smart Electrical Upgrades',
+    desc: 'Certified electricians for wiring, lighting, and smart homes.',
+    btnPrimary: { text: 'Hire Electricians', to: '/services?cat=Electrical' },
+    btnSecondary: { text: 'See More', to: '/services' },
+    alt: 'Electrician working on a panel',
+  },
+  {
+    img: imgCleaning,
+    title: 'Spotless Homes, Happy You',
+    desc: 'Book trusted cleaners with transparent pricing.',
+    btnPrimary: { text: 'Book Cleaning', to: '/services?cat=Cleaning' },
+    btnSecondary: { text: 'Browse All', to: '/services' },
+    alt: 'Cleaner wiping a counter',
+  },
+]
 
 const HeroBanner = () => {
   return (
@@ -20,101 +48,45 @@ const HeroBanner = () => {
           pagination={{ clickable: true }}
           className="h-full"
         >
-          <SwiperSlide aria-label="Plumbing Pros On-Demand">
-            <div className="relative w-full h-full">
-              <img
-                src={imgPlumbing}
-                alt="Plumber fixing a sink"
-                className="absolute inset-0 w-full h-full object-cover"
-                loading="eager"
-              />
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#6A1B9A]/70 via-[#C05DB9]/40 to-transparent mix-blend-multiply" />
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-l from-[#140022]/70 via-transparent to-transparent mix-blend-multiply" />
+          {slides.map((slide, idx) => (
+            <SwiperSlide key={idx} aria-label={slide.title}>
+              <div className="relative w-full h-full">
+                <img
+                  src={slide.img}
+                  alt={slide.alt}
+                  className="absolute inset-0 w-full h-full object-cover"
+                  loading={idx === 0 ? 'eager' : 'lazy'}
+                />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#6A1B9A]/70 via-[#C05DB9]/40 to-transparent mix-blend-multiply" />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-l from-[#140022]/70 via-transparent to-transparent mix-blend-multiply" />
 
-              <div className="relative z-10 h-full flex items-center justify-end">
-                <div className="text-right max-w-lg mr-4 sm:mr-8 md:mr-12">
-                  <h2 className="text-3xl sm:text-5xl font-extrabold leading-tight text-white drop-shadow-md">
-                    Plumbing Pros On-Demand
-                  </h2>
-                  <p className="mt-3 text-white/90 text-base sm:text-lg">
-                    Fix leaks fast with vetted plumbers available near you.
-                  </p>
-                  <div className="mt-6 inline-flex gap-3">
-                    <Link to="/services?cat=Plumbing" className="cosmic-btn">
-                      Find Plumbers
-                    </Link>
-                    <Link to="/services" className="cosmic-btn-outline">
-                      All Services
-                    </Link>
-                  </div>
+                <div className="relative z-10 h-full flex items-center justify-end">
+                  <motion.div
+                    className="text-right max-w-lg mr-4 sm:mr-8 md:mr-12"
+                    initial={{ opacity: 0, y: 50 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 1, ease: 'easeOut' }}
+                    key={slide.title}
+                  >
+                    <h2 className="text-3xl sm:text-5xl font-extrabold leading-tight text-white drop-shadow-md">
+                      {slide.title}
+                    </h2>
+                    <p className="mt-3 text-white/90 text-base sm:text-lg">
+                      {slide.desc}
+                    </p>
+                    <div className="mt-6 inline-flex gap-3">
+                      <Link to={slide.btnPrimary.to} className="cosmic-btn">
+                        {slide.btnPrimary.text}
+                      </Link>
+                      <Link to={slide.btnSecondary.to} className="cosmic-btn-outline">
+                        {slide.btnSecondary.text}
+                      </Link>
+                    </div>
+                  </motion.div>
                 </div>
               </div>
-            </div>
-          </SwiperSlide>
-
-          <SwiperSlide aria-label="Safe, Smart Electrical Upgrades">
-            <div className="relative w-full h-full">
-              <img
-                src={imgElectrical}
-                alt="Electrician working on a panel"
-                className="absolute inset-0 w-full h-full object-cover"
-                loading="lazy"
-              />
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#6A1B9A]/70 via-[#C05DB9]/40 to-transparent mix-blend-multiply" />
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-l from-[#140022]/70 via-transparent to-transparent mix-blend-multiply" />
-
-              <div className="relative z-10 h-full flex items-center justify-end">
-                <div className="text-right max-w-lg mr-4 sm:mr-8 md:mr-12">
-                  <h2 className="text-3xl sm:text-5xl font-extrabold leading-tight text-white drop-shadow-md">
-                    Safe, Smart Electrical Upgrades
-                  </h2>
-                  <p className="mt-3 text-white/90 text-base sm:text-lg">
-                    Certified electricians for wiring, lighting, and smart homes.
-                  </p>
-                  <div className="mt-6 inline-flex gap-3">
-                    <Link to="/services?cat=Electrical" className="cosmic-btn">
-                      Hire Electricians
-                    </Link>
-                    <Link to="/services" className="cosmic-btn-outline">
-                      See More
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </SwiperSlide>
-
-          <SwiperSlide aria-label="Spotless Homes, Happy You">
-            <div className="relative w-full h-full">
-              <img
-                src={imgCleaning}
-                alt="Cleaner wiping a counter"
-                className="absolute inset-0 w-full h-full object-cover"
-                loading="lazy"
-              />
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#6A1B9A]/70 via-[#C05DB9]/40 to-transparent mix-blend-multiply" />
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-l from-[#140022]/70 via-transparent to-transparent mix-blend-multiply" />
-
-              <div className="relative z-10 h-full flex items-center justify-end">
-                <div className="text-right max-w-lg mr-4 sm:mr-8 md:mr-12">
-                  <h2 className="text-3xl sm:text-5xl font-extrabold leading-tight text-white drop-shadow-md">
-                    Spotless Homes, Happy You
-                  </h2>
-                  <p className="mt-3 text-white/90 text-base sm:text-lg">
-                    Book trusted cleaners with transparent pricing.
-                  </p>
-                  <div className="mt-6 inline-flex gap-3">
-                    <Link to="/services?cat=Cleaning" className="cosmic-btn">
-                      Book Cleaning
-                    </Link>
-                    <Link to="/services" className="cosmic-btn-outline">
-                      Browse All
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </SwiperSlide>
+            </SwiperSlide>
+          ))}
         </Swiper>
       </div>
     </section>

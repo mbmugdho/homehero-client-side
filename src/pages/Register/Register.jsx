@@ -47,7 +47,6 @@ const Register = () => {
       return
     }
     try {
-      // Call register instead of login
       await register({
         name: form.name,
         email: form.email,

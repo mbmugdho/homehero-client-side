@@ -15,6 +15,49 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
   const [authLoading, setAuthLoading] = useState(true)
   const [ready, setReady] = useState(false)
+  const [userServices, setUserServices] = useState([])
+  const [userBookings, setUserBookings] = useState([])
+  const [selectedServices, setSelectedServices] = useState([]) 
+
+  const addUserService = (service) => {
+    setUserServices((prev) => [...prev, { ...service, status: 'pending' }])
+  }
+
+  const bookSelected = (serviceId) => {
+    const service = selectedServices.find(s => s.id === serviceId)
+    if (!service) return null
+
+    const booking = { ...service, status: 'ongoing', bookedAt: new Date() }
+    setUserBookings((prev) => [...prev, booking])
+
+    if (!userServices.find(s => s.id === service.id)) {
+      addUserService(service)
+    }
+
+    setSelectedServices(prev => prev.filter(s => s.id !== serviceId))
+    return booking
+  }
+
+  const finishService = (serviceId) => {
+    setUserBookings(prev =>
+      prev.map(s => s.id === serviceId ? { ...s, status: 'finished' } : s)
+    )
+    setUserServices(prev =>
+      prev.map(s => s.id === serviceId ? { ...s, status: 'finished' } : s)
+    )
+  }
+
+  const selectService = (service) => {
+    setSelectedServices((prev) => {
+      if (!prev.find(s => s.id === service.id)) {
+        return [...prev, service]
+      }
+      return prev
+    })
+  }
+
+  const ongoingCount = userServices.filter(s => s.status === 'ongoing').length
+  const finishedCount = userServices.filter(s => s.status === 'finished').length
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (u) => {
@@ -66,6 +109,15 @@ export const AuthProvider = ({ children }) => {
     login,
     loginWithGoogle,
     logout,
+    userServices,
+    userBookings,
+    selectedServices,
+    addUserService,
+    selectService,
+    bookSelected,
+    finishService,
+    ongoingCount,
+    finishedCount,
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
