@@ -1,0 +1,122 @@
+import React from 'react'
+import { Link } from 'react-router-dom'
+import HeroBanner from '../../components/Banner/HeroBanner'
+import ThreeDCarousel from '../../components/Carousel/ThreeDCarousel'
+
+const Home = () => {
+  return (
+    <div>
+      <HeroBanner />
+
+      <section className="container-x py-12 md:py-16">
+        <div className="grid md:grid-cols-2 gap-8 items-center">
+          <div>
+            <h2 className="text-cosmic text-3xl sm:text-4xl font-extrabold leading-tight">
+              Trusted home services, right where you live
+            </h2>
+            <p className="mt-3 text-white/90 text-base sm:text-lg">
+              We help clients discover and book the best local professionals —
+              from cleaning to plumbing to electrical. Every provider is vetted,
+              pricing is transparent, and our friendly support team is here to
+              help before and after your booking.
+            </p>
+
+            <ul className="mt-6 space-y-3">
+              <li className="flex items-start gap-3">
+                <span className="mt-1 inline-flex h-6 w-6 items-center justify-center rounded-full bg-white/10 text-[hsl(var(--a))]">
+                  ✓
+                </span>
+                <div className="text-white/90">
+                  <strong className="block">Vetted local pros</strong>
+                  <span className="text-white/70">
+                    Identity checks, reviews, and quality standards.
+                  </span>
+                </div>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="mt-1 inline-flex h-6 w-6 items-center justify-center rounded-full bg-white/10 text-[hsl(var(--a))]">
+                  ✓
+                </span>
+                <div className="text-white/90">
+                  <strong className="block">Upfront pricing</strong>
+                  <span className="text-white/70">
+                    Clear rates with no surprises at checkout.
+                  </span>
+                </div>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="mt-1 inline-flex h-6 w-6 items-center justify-center rounded-full bg-white/10 text-[hsl(var(--a))]">
+                  ✓
+                </span>
+                <div className="text-white/90">
+                  <strong className="block">Support that cares</strong>
+                  <span className="text-white/70">
+                    We're here to ensure you get the best service possible.
+                  </span>
+                </div>
+              </li>
+            </ul>
+
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link to="/services" className="cosmic-btn">
+                Explore Services
+              </Link>
+              <Link to="/services" className="cosmic-btn-outline">
+                How it works
+              </Link>
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm">
+            <h3 className="text-white/90 text-xl font-semibold">
+              Popular in your area
+            </h3>
+            <p className="text-white/70 mt-1">
+              Book trusted professionals for everyday home needs.
+            </p>
+
+            <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="rounded-xl border border-white/10 bg-white/5 p-4">
+                <div className="text-white font-semibold">Cleaning</div>
+                <div className="text-white/70 text-sm">
+                  Deep cleans, move-outs, regular upkeep
+                </div>
+              </div>
+              <div className="rounded-xl border border-white/10 bg-white/5 p-4">
+                <div className="text-white font-semibold">Plumbing</div>
+                <div className="text-white/70 text-sm">
+                  Leaks, installs, water heaters
+                </div>
+              </div>
+              <div className="rounded-xl border border-white/10 bg-white/5 p-4">
+                <div className="text-white font-semibold">Electrical</div>
+                <div className="text-white/70 text-sm">
+                  Wiring, lighting, smart homes
+                </div>
+              </div>
+              <div className="rounded-xl border border-white/10 bg-white/5 p-4">
+                <div className="text-white font-semibold">Gardening</div>
+                <div className="text-white/70 text-sm">
+                  Lawn care, trimming, planting
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-6 text-white/70 text-sm">
+              Can't find what you need?{' '}
+              <Link
+                to="/services"
+                className="underline underline-offset-4 decoration-[hsl(var(--a))]"
+              >
+                Browse all categories
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+      <ThreeDCarousel></ThreeDCarousel>
+    </div>
+  )
+}
+
+export default Home

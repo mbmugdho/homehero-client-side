@@ -1,0 +1,138 @@
+@import 'tailwindcss';
+@plugin "daisyui";
+
+@layer base {
+  [data-theme='homehero'] {
+    --p: 296 54% 46%;
+    --pc: 0 0% 100%;
+
+    --s: 312 43% 56%;
+    --sc: 0 0% 100%;
+
+    --a: 333 62% 86%;
+    --ac: 275 42% 20%;
+
+    --n: 276 83% 7%;
+    --nc: 0 0% 100%;
+
+    --b1: 270 30% 96%;
+    --b2: 270 28% 92%;
+    --b3: 270 26% 88%;
+    --bc: 260 55% 15%;
+  }
+
+  html:focus-within {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI,
+      Roboto, Helvetica, Arial, 'Apple Color Emoji', 'Segoe UI Emoji';
+    @apply text-base-content relative min-h-screen antialiased;
+
+    background: radial-gradient(
+        1200px 600px at 15% -10%,
+        #f3cde1 0%,
+        transparent 45%
+      ),
+      radial-gradient(1000px 500px at 85% 0%, #c05db9 0%, transparent 45%),
+      linear-gradient(180deg, #140022 0%, #2e0a3f 55%, #6a1b6d 100%);
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: url('https://uploads-ssl.webflow.com/5f6cbf6ac1f6d255a1ad28a9/5f6f9b3f1f1e8050ba56d6a3_noise.png')
+      repeat;
+    opacity: 0.12;
+    mix-blend-mode: multiply;
+  }
+}
+
+@layer utilities {
+  .container-x {
+    @apply w-full max-w-[1200px] mx-auto px-4;
+  }
+
+  .fade-in-up {
+    animation: fade-in-up 0.36s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  @keyframes fade-in-up {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .topbar {
+    @apply fixed left-0 right-0 top-0 h-1 z-[1200];
+    background-image: linear-gradient(90deg, hsl(var(--p)), hsl(var(--s)));
+    transform: translateX(-100%);
+    transition: transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .topbar.active {
+    transform: translateX(0);
+  }
+
+  .glass-tint {
+    background: linear-gradient(
+      to bottom,
+      hsl(var(--p) / 0.12),
+      hsl(var(--s) / 0.1),
+      transparent
+    );
+    @apply backdrop-blur-md;
+  }
+
+  .text-cosmic {
+    background-image: linear-gradient(90deg, #6a1b9a, #c05db9);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .cosmic-btn {
+    @apply text-white font-semibold px-5 py-2.5 rounded-full shadow-md transition-all duration-300;
+    background: linear-gradient(90deg, #6a1b9a, #c05db9);
+  }
+  .cosmic-btn:hover {
+    background: linear-gradient(90deg, #c05db9, #f3cde1);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(192, 93, 185, 0.3);
+  }
+
+  .cosmic-btn-outline {
+    @apply border border-white/30 text-white font-semibold px-5 py-2.5 rounded-full transition-all duration-300;
+  }
+  .cosmic-btn-outline:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: #c05db9;
+  }
+  .cosmic-badge {
+    @apply border-none text-white font-semibold bg-gradient-to-r from-[hsl(var(--p))] to-[hsl(var(--s))] shadow-[0_0_10px_hsl(var(--p)/0.5)];
+  }
+}
+@layer utilities {
+  @keyframes spin-y {
+    to {
+      transform: rotateY(360deg);
+    }
+  }
+  .animate-spin-y-slow {
+    animation: spin-y 18s linear infinite;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 1ms !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+}
