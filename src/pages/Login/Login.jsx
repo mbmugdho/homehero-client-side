@@ -18,7 +18,9 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      await login({ email: form.email })
+      // ✅ Pass both email and password
+      await login({ email: form.email, password: form.password })
+
       Swal.fire({
         icon: 'success',
         title: 'Welcome back',
@@ -90,7 +92,9 @@ const Login = () => {
         </div>
 
         <form onSubmit={handleSubmit}>
-          <label className="block text-white/80 mb-2">Email <span className='text-red-500'>*</span></label>
+          <label className="block text-white/80 mb-2">
+            Email <span className="text-red-500">*</span>
+          </label>
           <input
             name="email"
             type="email"
@@ -100,7 +104,9 @@ const Login = () => {
             onChange={handleChange}
             className="input input-bordered rounded-full w-full bg-white/90 text-[hsl(var(--bc))]"
           />
-          <label className="block text-white/80 mt-4 mb-2">Password <span className='text-red-500'>*</span></label>
+          <label className="block text-white/80 mt-4 mb-2">
+            Password <span className="text-red-500">*</span>
+          </label>
           <input
             name="password"
             type="password"
@@ -122,7 +128,9 @@ const Login = () => {
             )}
           </button>
         </form>
-        <p className="text-white/80 text-center mt-4">Forget Password? Click Here.</p>
+        <p className="text-white/80 text-center mt-4">
+          Forget Password? Click Here.
+        </p>
         <p className="text-white/80 text-center mt-4">
           New here?{' '}
           <Link to="/register" className="text-[hsl(var(--a))] font-semibold">

@@ -4,7 +4,7 @@ import Swal from 'sweetalert2'
 import { useAuth } from '../../context/AuthContext'
 
 const Register = () => {
-  const { login, loginWithGoogle, authLoading } = useAuth()
+  const { register, loginWithGoogle, authLoading } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
   const from = location.state?.from || '/'
@@ -47,7 +47,13 @@ const Register = () => {
       return
     }
     try {
-      await login({ email: form.email, name: form.name })
+      // Call register instead of login
+      await register({
+        name: form.name,
+        email: form.email,
+        password: form.password,
+      })
+
       Swal.fire({
         icon: 'success',
         title: 'Account created',
@@ -128,7 +134,9 @@ const Register = () => {
             onChange={handleChange}
             className="input input-bordered w-full bg-white/90 text-[hsl(var(--bc))]"
           />
-          <label className="block text-white/80 mt-4 mb-2">Email <span className='text-red-500'>*</span></label>
+          <label className="block text-white/80 mt-4 mb-2">
+            Email <span className="text-red-500">*</span>
+          </label>
           <input
             name="email"
             type="email"
@@ -138,7 +146,9 @@ const Register = () => {
             onChange={handleChange}
             className="input input-bordered w-full bg-white/90 text-[hsl(var(--bc))]"
           />
-          <label className="block text-white/80 mt-4 mb-2">Password <span className='text-red-500'>*</span></label>
+          <label className="block text-white/80 mt-4 mb-2">
+            Password <span className="text-red-500">*</span>
+          </label>
           <input
             name="password"
             type="password"
@@ -149,7 +159,7 @@ const Register = () => {
             className="input input-bordered w-full bg-white/90 text-[hsl(var(--bc))]"
           />
           <label className="block text-white/80 mt-4 mb-2">
-            Confirm password <span className='text-red-500'>*</span>
+            Confirm password <span className="text-red-500">*</span>
           </label>
           <input
             name="confirm"

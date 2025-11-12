@@ -1,48 +1,72 @@
-import { createContext, useContext, useMemo, useState } from 'react'
+import { createContext, useContext, useEffect, useState } from 'react'
+import { auth, googleProvider } from '../firebase.config'
+import {
+  onAuthStateChanged,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  signOut,
+  updateProfile,
+} from 'firebase/auth'
 
 const AuthContext = createContext(null)
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
-  const [authLoading, setAuthLoading] = useState(false)
-  const ready = true
+  const [authLoading, setAuthLoading] = useState(true)
+  const [ready, setReady] = useState(false)
 
-  const login = async ({ email, name, avatar } = {}) => {
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, (u) => {
+      setUser(u)
+      setAuthLoading(false)
+      setReady(true)
+    })
+    return () => unsub()
+  }, [])
+
+  const register = async ({ name, email, password, photoURL }) => {
     setAuthLoading(true)
-    await new Promise((r) => setTimeout(r, 500))
-    const u = {
-      id: 'u_1',
-      name: name || 'HomeHero User',
-      email: email || 'user@homehero.app',
-      avatar: avatar || 'https://i.pravatar.cc/96?img=18',
-    }
-    setUser(u)
+    const cred = await createUserWithEmailAndPassword(auth, email, password)
+    if (name || photoURL)
+      await updateProfile(cred.user, {
+        displayName: name || undefined,
+        photoURL: photoURL || undefined,
+      })
     setAuthLoading(false)
-    return u
+    return cred.user
   }
 
-  const loginWithGoogle = async () =>
-    login({ name: 'Google User', email: 'google@homehero.app' })
+  const login = async ({ email, password }) => {
+    setAuthLoading(true)
+    const cred = await signInWithEmailAndPassword(auth, email, password)
+    setAuthLoading(false)
+    return cred.user
+  }
+
+  const loginWithGoogle = async () => {
+    setAuthLoading(true)
+    const cred = await signInWithPopup(auth, googleProvider)
+    setAuthLoading(false)
+    return cred.user
+  }
 
   const logout = async () => {
     setAuthLoading(true)
-    await new Promise((r) => setTimeout(r, 200))
-    setUser(null)
+    await signOut(auth)
     setAuthLoading(false)
   }
 
-  const value = useMemo(
-    () => ({
-      user,
-      isAuthed: !!user,
-      ready,
-      authLoading,
-      login,
-      loginWithGoogle,
-      logout,
-    }),
-    [user, authLoading]
-  )
+  const value = {
+    user,
+    isAuthed: !!user,
+    ready,
+    authLoading,
+    register,
+    login,
+    loginWithGoogle,
+    logout,
+  }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
