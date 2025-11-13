@@ -1,43 +1,39 @@
-import { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
-import ServiceCard from '../../components/ServiceCard/ServiceCard';
+import { useEffect, useState } from 'react'
+import { motion } from 'framer-motion'
+import ServiceCard from '../../components/ServiceCard/ServiceCard'
+import { API_BASE_URL } from '../../config'
 
 const PopularServices = () => {
-  const [services, setServices] = useState([]);
+  const [services, setServices] = useState([])
 
   useEffect(() => {
     const fetchServices = async () => {
       try {
-        const res = await fetch('/services.json', {
+        const res = await fetch(`${API_BASE_URL}/services`, {
           headers: { 'Content-Type': 'application/json' },
-        });
-        if (!res.ok) throw new Error('Failed to fetch services');
-        const data = await res.json();
-        const top6 = data
-          .sort((a, b) => b.rating - a.rating)
-          .slice(0, 6);
-        setServices(top6);
-      } catch (err) {
-        console.error(err);
-      }
-    };
+        })
 
-    fetchServices();
-  }, []);
+        if (!res.ok) throw new Error('Failed to fetch services')
+        const data = await res.json()
+        const top6 = data.sort((a, b) => b.rating - a.rating).slice(0, 6)
+        setServices(top6)
+      } catch (err) {
+        console.error(err)
+      }
+    }
+
+    fetchServices()
+  }, [])
 
   const container = {
     hidden: {},
-    show: {
-      transition: {
-        staggerChildren: 0.15,
-      },
-    },
-  };
+    show: { transition: { staggerChildren: 0.15 } },
+  }
 
   const item = {
     hidden: { opacity: 0, y: 40 },
     show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } },
-  };
+  }
 
   return (
     <section className="container-x py-2">
@@ -58,13 +54,13 @@ const PopularServices = () => {
         viewport={{ once: true, amount: 0.2 }}
       >
         {services.map((svc) => (
-          <motion.div key={svc.id} variants={item}>
+          <motion.div key={svc._id} variants={item}>
             <ServiceCard service={svc} />
           </motion.div>
         ))}
       </motion.div>
     </section>
-  );
-};
+  )
+}
 
-export default PopularServices;
+export default PopularServices

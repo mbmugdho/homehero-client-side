@@ -38,7 +38,7 @@ const slides = [
 
 const HeroBanner = () => {
   return (
-    <section className="container-x py-10">
+    <section className="container-x py-15">
       <div className="relative h-[60vh] min-h-[420px] overflow-hidden rounded-2xl border border-white/10 shadow-xl">
         <Swiper
           modules={[Autoplay, Pagination]}

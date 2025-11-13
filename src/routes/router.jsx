@@ -33,8 +33,10 @@ const RequireAuth = ({ children }) => {
   return children
 }
 
+const BASE_URL = 'http://localhost:5000'
+
 const fetchServices = async () => {
-  const res = await fetch('/services.json', {
+  const res = await fetch(`${BASE_URL}/services`, {
     headers: { 'Content-Type': 'application/json' },
   })
   if (!res.ok)
@@ -43,10 +45,11 @@ const fetchServices = async () => {
 }
 
 const fetchServiceById = async ({ params }) => {
-  const data = await fetchServices()
-  const svc = data.find((s) => s.id === params.id)
-  if (!svc) throw new Response('Service not found', { status: 404 })
-  return svc
+  const res = await fetch(`${BASE_URL}/services/${params.id}`, {
+    headers: { 'Content-Type': 'application/json' },
+  })
+  if (!res.ok) throw new Response('Service not found', { status: res.status })
+  return res.json()
 }
 
 const router = createBrowserRouter([
