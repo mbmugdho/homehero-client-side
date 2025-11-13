@@ -1,10 +1,10 @@
 import { useAuth } from '../../context/AuthContext'
 
 const MyServices = () => {
-  const {
-    userBookings,
-    finishService,
-  } = useAuth()
+  const { userBookings, finishService } = useAuth()
+
+  const ongoing = userBookings.filter((b) => b.status === 'ongoing')
+  const finished = userBookings.filter((b) => b.status === 'finished')
 
   return (
     <section className="container-x py-12">
@@ -13,15 +13,11 @@ const MyServices = () => {
       <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 mb-8">
         <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm text-white">
           <div className="text-sm text-white/80">Ongoing</div>
-          <div className="text-3xl font-extrabold">
-            {userBookings.filter((b) => b.status === 'ongoing').length}
-          </div>
+          <div className="text-3xl font-extrabold">{ongoing.length}</div>
         </div>
         <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm text-white">
           <div className="text-sm text-white/80">Finished</div>
-          <div className="text-3xl font-extrabold">
-            {userBookings.filter((b) => b.status === 'finished').length}
-          </div>
+          <div className="text-3xl font-extrabold">{finished.length}</div>
         </div>
       </div>
 
@@ -33,13 +29,13 @@ const MyServices = () => {
         <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
           {userBookings.map((svc) => (
             <div
-              key={svc.id}
+              key={svc._id || svc.id}
               className="card bg-white/10 border border-white/15 text-white shadow-xl"
             >
               <img
                 src={svc.image}
                 alt={svc.title}
-                className="w-full h-48 object-cover"
+                className="w-full h-48 object-cover rounded-t-xl"
               />
               <div className="p-4">
                 <div className="flex items-center justify-between">
@@ -52,7 +48,7 @@ const MyServices = () => {
 
                 {svc.status === 'ongoing' && (
                   <button
-                    onClick={() => finishService(svc.id)}
+                    onClick={() => finishService(svc._id || svc.id)}
                     className="cosmic-btn mt-3 w-full"
                   >
                     Finish

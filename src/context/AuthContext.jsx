@@ -8,6 +8,7 @@ import {
   signOut,
   updateProfile,
 } from 'firebase/auth'
+import { API_BASE_URL } from '../config'
 
 const AuthContext = createContext(null)
 
@@ -17,47 +18,117 @@ export const AuthProvider = ({ children }) => {
   const [ready, setReady] = useState(false)
   const [userServices, setUserServices] = useState([])
   const [userBookings, setUserBookings] = useState([])
-  const [selectedServices, setSelectedServices] = useState([]) 
+  const [selectedServices, setSelectedServices] = useState([])
 
-  const addUserService = (service) => {
-    setUserServices((prev) => [...prev, { ...service, status: 'pending' }])
-  }
-
-  const bookSelected = (serviceId) => {
-    const service = selectedServices.find(s => s.id === serviceId)
-    if (!service) return null
-
-    const booking = { ...service, status: 'ongoing', bookedAt: new Date() }
-    setUserBookings((prev) => [...prev, booking])
-
-    if (!userServices.find(s => s.id === service.id)) {
-      addUserService(service)
+  // Fetch bookings & services whenever user logs in
+  useEffect(() => {
+    if (!user?.uid) {
+      setUserBookings([])
+      setUserServices([])
+      return
     }
 
-    setSelectedServices(prev => prev.filter(s => s.id !== serviceId))
-    return booking
-  }
+    const fetchBookings = async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/bookings?uid=${user.uid}`)
+        if (!res.ok) throw new Error('Failed to fetch bookings')
+        const data = await res.json()
+        setUserBookings(data)
+      } catch (err) {
+        console.error(err)
+      }
+    }
 
-  const finishService = (serviceId) => {
-    setUserBookings(prev =>
-      prev.map(s => s.id === serviceId ? { ...s, status: 'finished' } : s)
-    )
-    setUserServices(prev =>
-      prev.map(s => s.id === serviceId ? { ...s, status: 'finished' } : s)
-    )
-  }
+    const fetchServices = async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/my-services?uid=${user.uid}`)
+        if (!res.ok) throw new Error('Failed to fetch services')
+        const data = await res.json()
+        setUserServices(data)
+      } catch (err) {
+        console.error(err)
+      }
+    }
+
+    fetchBookings()
+    fetchServices()
+  }, [user])
 
   const selectService = (service) => {
-    setSelectedServices((prev) => {
-      if (!prev.find(s => s.id === service.id)) {
-        return [...prev, service]
-      }
-      return prev
-    })
+    setSelectedServices((prev) =>
+      prev.find((s) => s.id === service.id) ? prev : [...prev, service]
+    )
   }
 
-  const ongoingCount = userServices.filter(s => s.status === 'ongoing').length
-  const finishedCount = userServices.filter(s => s.status === 'finished').length
+  const bookSelected = async (serviceId) => {
+    const service = selectedServices.find(
+      (s) => s.id === serviceId || s._id === serviceId
+    )
+    if (!service || !user) return null
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/bookings`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: user.uid,
+          serviceId: service._id || service.id,
+          ...service,
+        }),
+      })
+      const data = await res.json()
+
+      setUserBookings((prev) => [
+        ...prev,
+        { ...service, status: 'ongoing', _id: data.insertedId },
+      ])
+
+      if (!userServices.find((s) => s.id === service.id))
+        setUserServices((prev) => [...prev, { ...service, status: 'ongoing' }])
+
+      setSelectedServices((prev) =>
+        prev.filter((s) => s.id !== serviceId && s._id !== serviceId)
+      )
+
+      return data
+    } catch (err) {
+      console.error('Booking failed', err)
+      return null
+    }
+  }
+
+  const finishService = async (serviceId) => {
+    const booking = userBookings.find(
+      (b) => b.id === serviceId || b._id === serviceId
+    )
+    if (!booking) return
+
+    try {
+      await fetch(`${API_BASE_URL}/bookings/${booking._id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: 'finished' }),
+      })
+
+      setUserBookings((prev) =>
+        prev.map((b) =>
+          b.id === serviceId || b._id === serviceId
+            ? { ...b, status: 'finished' }
+            : b
+        )
+      )
+      setUserServices((prev) =>
+        prev.map((s) => (s.id === serviceId ? { ...s, status: 'finished' } : s))
+      )
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
+  const ongoingCount = userServices.filter((s) => s.status === 'ongoing').length
+  const finishedCount = userServices.filter(
+    (s) => s.status === 'finished'
+  ).length
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (u) => {
@@ -82,45 +153,51 @@ export const AuthProvider = ({ children }) => {
 
   const login = async ({ email, password }) => {
     setAuthLoading(true)
-    const cred = await signInWithEmailAndPassword(auth, email, password)
+    const userCred = await signInWithEmailAndPassword(auth, email, password)
     setAuthLoading(false)
-    return cred.user
+    return userCred.user
   }
 
   const loginWithGoogle = async () => {
     setAuthLoading(true)
-    const cred = await signInWithPopup(auth, googleProvider)
+    const userCred = await signInWithPopup(auth, googleProvider)
     setAuthLoading(false)
-    return cred.user
+    return userCred.user
   }
 
   const logout = async () => {
     setAuthLoading(true)
     await signOut(auth)
     setAuthLoading(false)
+    setUserServices([])
+    setUserBookings([])
+    setSelectedServices([])
   }
 
-  const value = {
-    user,
-    isAuthed: !!user,
-    ready,
-    authLoading,
-    register,
-    login,
-    loginWithGoogle,
-    logout,
-    userServices,
-    userBookings,
-    selectedServices,
-    addUserService,
-    selectService,
-    bookSelected,
-    finishService,
-    ongoingCount,
-    finishedCount,
-  }
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+  return (
+    <AuthContext.Provider
+      value={{
+        user,
+        isAuthed: !!user,
+        ready,
+        authLoading,
+        register,
+        login,
+        loginWithGoogle,
+        logout,
+        userServices,
+        userBookings,
+        selectedServices,
+        selectService,
+        bookSelected,
+        finishService,
+        ongoingCount,
+        finishedCount,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  )
 }
 
 export const useAuth = () => {
