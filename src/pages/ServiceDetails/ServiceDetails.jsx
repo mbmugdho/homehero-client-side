@@ -1,13 +1,22 @@
 import { useLoaderData, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import Swal from 'sweetalert2'
+import { useMemo, useState } from 'react'
 
 const ServiceDetails = () => {
   const svc = useLoaderData()
-  const { isAuthed, selectService } = useAuth()
+  const { isAuthed, selectService, user } = useAuth()
   const navigate = useNavigate()
+  const [open, setOpen] = useState(false)
 
-  const handleBook = () => {
+  const defaultDateTime = useMemo(() => {
+    const d = new Date()
+    const tz = d.getTimezoneOffset()
+    const local = new Date(d.getTime() - tz * 60000)
+    return local.toISOString().slice(0, 16)
+  }, [])
+
+  const handleOpen = () => {
     if (!isAuthed) {
       Swal.fire({
         icon: 'info',
@@ -18,7 +27,12 @@ const ServiceDetails = () => {
       })
       return
     }
+    setOpen(true)
+  }
+
+  const handleProceed = () => {
     selectService(svc)
+    setOpen(false)
     navigate('/add-service')
   }
 
@@ -60,12 +74,62 @@ const ServiceDetails = () => {
                 <span className="text-right">{svc.location}</span>
               </div>
             </div>
-            <button className="cosmic-btn w-full mt-4" onClick={handleBook}>
+            <button className="cosmic-btn w-full mt-4" onClick={handleOpen}>
               Book Now
             </button>
           </aside>
         </div>
       </div>
+
+      <dialog className={`modal ${open ? 'modal-open' : ''}`}>
+        <div className="modal-box bg-[hsl(var(--n))] text-white border border-white/10">
+          <h3 className="text-xl font-bold">Confirm Booking</h3>
+          <p className="text-white/70 mt-1">{svc.title}</p>
+          <div className="mt-4 grid gap-3">
+            <label className="block">
+              <span className="block mb-1">Your Email</span>
+              <input
+                type="email"
+                readOnly
+                value={user?.email || ''}
+                className="input input-bordered w-full bg-white/90 text-[hsl(var(--bc))]"
+              />
+            </label>
+            <label className="block">
+              <span className="block mb-1">Date & Time (preview)</span>
+              <input
+                type="datetime-local"
+                readOnly
+                value={defaultDateTime}
+                className="input input-bordered w-full bg-white/90 text-[hsl(var(--bc))]"
+              />
+            </label>
+            <label className="block">
+              <span className="block mb-1">Price (preview)</span>
+              <input
+                type="number"
+                readOnly
+                value={svc.hourly_rate ?? 0}
+                className="input input-bordered w-full bg-white/90 text-[hsl(var(--bc))]"
+              />
+            </label>
+          </div>
+          <div className="mt-5 grid gap-2">
+            <button className="cosmic-btn w-full" onClick={handleProceed}>
+              Continue to Add Service
+            </button>
+            <button
+              className="cosmic-btn-outline w-full"
+              onClick={() => setOpen(false)}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+        <form method="dialog" className="modal-backdrop">
+          <button onClick={() => setOpen(false)}>close</button>
+        </form>
+      </dialog>
     </section>
   )
 }
