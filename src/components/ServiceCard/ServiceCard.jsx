@@ -4,26 +4,22 @@ import { useAuth } from '../../context/AuthContext'
 import { motion } from 'framer-motion'
 
 const ServiceCard = ({ service }) => {
-  const { id, title, category, description, rating, reviews, hourly_rate, duration, location, image, featured } = service
+  const { _id, id, title, category, description, rating, reviews, hourly_rate, duration, location, image, featured } = service
+  const serviceId = (_id && _id.toString ? _id.toString() : _id) || (id && id.toString ? id.toString() : id) || ''
   const { isAuthed, selectService } = useAuth()
   const navigate = useNavigate()
 
-  const price = typeof hourly_rate === 'number' ? `$${hourly_rate}/hr` : ''
-
   const handleAddService = () => {
     if (!isAuthed) {
-      Swal.fire({
-        icon: 'info',
-        title: 'You need to log in first',
-        confirmButtonColor: '#8C2FA3',
-        background: '#1b0b28',
-        color: '#fff',
-      }).then(() => navigate('/login', { state: { from: `/service/${id}` } }))
+      Swal.fire({ icon: 'info', title: 'You need to log in first', confirmButtonColor: '#8C2FA3', background: '#1b0b28', color: '#fff' })
+        .then(() => navigate('/login', { state: { from: `/service/${serviceId}` } }))
       return
     }
     selectService(service)
     navigate('/add-service')
   }
+
+  const price = typeof hourly_rate === 'number' ? `$${hourly_rate}/hr` : ''
 
   return (
     <motion.article
@@ -49,15 +45,7 @@ const ServiceCard = ({ service }) => {
 
         <div className="mt-2 flex items-center gap-2 text-amber-400">
           {Array.from({ length: 5 }).map((_, i) => (
-            <svg
-              key={i}
-              width="16"
-              height="16"
-              viewBox="0 0 20 20"
-              fill={i < Math.round(rating) ? 'currentColor' : 'none'}
-              stroke="currentColor"
-              className={i < Math.round(rating) ? '' : 'text-amber-400/40'}
-            >
+            <svg key={i} width="16" height="16" viewBox="0 0 20 20" fill={i < Math.round(rating) ? 'currentColor' : 'none'} stroke="currentColor" className={i < Math.round(rating) ? '' : 'text-amber-400/40'}>
               <path d="M10 15l-5.878 3.09 1.122-6.545L.488 6.91 6.06 6.09 10 0l3.94 6.09 5.572.82-4.756 4.635 1.122 6.545z" />
             </svg>
           ))}
@@ -71,7 +59,7 @@ const ServiceCard = ({ service }) => {
         </div>
 
         <div className="card-actions mt-4 gap-2">
-          <Link to={`/service/${id}`} className="cosmic-btn">View Details</Link>
+          <Link to={`/service/${encodeURIComponent(serviceId)}`} className="cosmic-btn">View Details</Link>
           <button type="button" onClick={handleAddService} className="cosmic-btn-outline">Add Service</button>
         </div>
       </div>

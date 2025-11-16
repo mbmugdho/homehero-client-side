@@ -1,6 +1,5 @@
 import { createBrowserRouter, Navigate, useLocation } from 'react-router-dom'
 import RootLayout from '../layouts/RootLayout.jsx'
-
 import Home from '../pages/Home/Home.jsx'
 import Services from '../pages/Services/Services.jsx'
 import ServiceDetails from '../pages/ServiceDetails/ServiceDetails.jsx'
@@ -11,13 +10,12 @@ import Profile from '../pages/Profile/Profile.jsx'
 import Login from '../pages/Login/Login.jsx'
 import Register from '../pages/Register/Register.jsx'
 import NotFound from '../pages/NotFound/NotFound.jsx'
-
 import { useAuth } from '../context/AuthContext.jsx'
+import { API_BASE_URL } from '../config'
 
 const RequireAuth = ({ children }) => {
   const { isAuthed, ready } = useAuth()
   const location = useLocation()
-
   if (!ready) {
     return (
       <div className="container-x py-16 flex justify-center">
@@ -25,18 +23,14 @@ const RequireAuth = ({ children }) => {
       </div>
     )
   }
-
   if (!isAuthed) {
     return <Navigate to="/login" replace state={{ from: location.pathname }} />
   }
-
   return children
 }
 
-const BASE_URL = 'http://localhost:5000'
-
 const fetchServices = async () => {
-  const res = await fetch(`${BASE_URL}/services`, {
+  const res = await fetch(`${API_BASE_URL}/services`, {
     headers: { 'Content-Type': 'application/json' },
   })
   if (!res.ok)
@@ -45,7 +39,7 @@ const fetchServices = async () => {
 }
 
 const fetchServiceById = async ({ params }) => {
-  const res = await fetch(`${BASE_URL}/services/${params.id}`, {
+  const res = await fetch(`${API_BASE_URL}/services/${params.id}`, {
     headers: { 'Content-Type': 'application/json' },
   })
   if (!res.ok) throw new Response('Service not found', { status: res.status })

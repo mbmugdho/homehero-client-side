@@ -14,114 +14,130 @@ const AuthContext = createContext(null)
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
+  const [appUser, setAppUser] = useState(null)
   const [authLoading, setAuthLoading] = useState(true)
   const [ready, setReady] = useState(false)
   const [userServices, setUserServices] = useState([])
   const [userBookings, setUserBookings] = useState([])
   const [selectedServices, setSelectedServices] = useState([])
 
-  // Fetch bookings & services whenever user logs in
   useEffect(() => {
-    if (!user?.uid) {
-      setUserBookings([])
-      setUserServices([])
-      return
-    }
+    const unsub = onAuthStateChanged(auth, async (u) => {
+      setUser(u)
+      setAuthLoading(false)
+      setReady(true)
+      if (u?.uid) {
+        try {
+          const syncRes = await fetch(`${API_BASE_URL}/users/sync`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              uid: u.uid,
+              email: u.email,
+              name: u.displayName,
+              photoURL: u.photoURL,
+              providerIds: (u.providerData || []).map((p) => p.providerId),
+              lastLoginAt: u.metadata?.lastLoginAt || Date.now(),
+            }),
+          })
+          const synced = syncRes.ok ? await syncRes.json() : null
+          setAppUser(synced)
 
-    const fetchBookings = async () => {
-      try {
-        const res = await fetch(`${API_BASE_URL}/bookings?uid=${user.uid}`)
-        if (!res.ok) throw new Error('Failed to fetch bookings')
-        const data = await res.json()
-        setUserBookings(data)
-      } catch (err) {
-        console.error(err)
+          const r1 = await fetch(`${API_BASE_URL}/bookings?uid=${u.uid}`)
+          const b = r1.ok ? await r1.json() : []
+          setUserBookings(b)
+          setUserServices(b)
+        } catch {}
+      } else {
+        setAppUser(null)
+        setUserBookings([])
+        setUserServices([])
+        setSelectedServices([])
       }
-    }
+    })
+    return () => unsub()
+  }, [])
 
-    const fetchServices = async () => {
-      try {
-        const res = await fetch(`${API_BASE_URL}/my-services?uid=${user.uid}`)
-        if (!res.ok) throw new Error('Failed to fetch services')
-        const data = await res.json()
-        setUserServices(data)
-      } catch (err) {
-        console.error(err)
-      }
-    }
-
-    fetchBookings()
-    fetchServices()
-  }, [user])
+  const keyOf = (s) => (s?._id || s?.id || '').toString()
 
   const selectService = (service) => {
     setSelectedServices((prev) =>
-      prev.find((s) => s.id === service.id) ? prev : [...prev, service]
+      prev.some((x) => keyOf(x) === keyOf(service)) ? prev : [service, ...prev]
     )
   }
 
-  const bookSelected = async (serviceId) => {
-    const service = selectedServices.find(
-      (s) => s.id === serviceId || s._id === serviceId
-    )
+  const bookSelected = async (service, options = {}) => {
     if (!service || !user) return null
-
     try {
       const res = await fetch(`${API_BASE_URL}/bookings`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          userId: user.uid,
+          uid: user.uid,
+          userEmail: user.email,
           serviceId: service._id || service.id,
-          ...service,
+          title: service.title,
+          category: service.category,
+          hourly_rate: service.hourly_rate,
+          duration: service.duration,
+          location: service.location,
+          image: service.image,
+          bookingDate: options.bookingDate || new Date().toISOString(),
+          price:
+            typeof options.price === 'number'
+              ? options.price
+              : service.hourly_rate,
         }),
       })
+      if (!res.ok) return null
       const data = await res.json()
-
-      setUserBookings((prev) => [
-        ...prev,
-        { ...service, status: 'ongoing', _id: data.insertedId },
-      ])
-
-      if (!userServices.find((s) => s.id === service.id))
-        setUserServices((prev) => [...prev, { ...service, status: 'ongoing' }])
-
+      setUserBookings((prev) => [data, ...prev])
+      setUserServices((prev) => {
+        const exists = prev.some((x) => keyOf(x) === keyOf(data))
+        return exists
+          ? prev.map((x) => (keyOf(x) === keyOf(data) ? data : x))
+          : [data, ...prev]
+      })
       setSelectedServices((prev) =>
-        prev.filter((s) => s.id !== serviceId && s._id !== serviceId)
+        prev.filter((x) => keyOf(x) !== keyOf(service))
       )
-
       return data
-    } catch (err) {
-      console.error('Booking failed', err)
+    } catch {
       return null
     }
   }
 
-  const finishService = async (serviceId) => {
-    const booking = userBookings.find(
-      (b) => b.id === serviceId || b._id === serviceId
-    )
-    if (!booking) return
-
+  const finishService = async (bookingId) => {
     try {
-      await fetch(`${API_BASE_URL}/bookings/${booking._id}`, {
+      await fetch(`${API_BASE_URL}/bookings/${bookingId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: 'finished' }),
       })
-
       setUserBookings((prev) =>
         prev.map((b) =>
-          b.id === serviceId || b._id === serviceId
-            ? { ...b, status: 'finished' }
-            : b
+          keyOf(b) === bookingId ? { ...b, status: 'finished' } : b
         )
       )
       setUserServices((prev) =>
-        prev.map((s) => (s.id === serviceId ? { ...s, status: 'finished' } : s))
+        prev.map((s) =>
+          keyOf(s) === bookingId ? { ...s, status: 'finished' } : s
+        )
       )
-    } catch (err) {
-      console.error(err)
+    } catch {}
+  }
+
+  const cancelBooking = async (bookingId) => {
+    try {
+      const res = await fetch(`${API_BASE_URL}/bookings/${bookingId}`, {
+        method: 'DELETE',
+      })
+      if (!res.ok) return false
+      setUserBookings((prev) => prev.filter((b) => keyOf(b) !== bookingId))
+      setUserServices((prev) => prev.filter((s) => keyOf(s) !== bookingId))
+      return true
+    } catch {
+      return false
     }
   }
 
@@ -129,15 +145,6 @@ export const AuthProvider = ({ children }) => {
   const finishedCount = userServices.filter(
     (s) => s.status === 'finished'
   ).length
-
-  useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (u) => {
-      setUser(u)
-      setAuthLoading(false)
-      setReady(true)
-    })
-    return () => unsub()
-  }, [])
 
   const register = async ({ name, email, password, photoURL }) => {
     setAuthLoading(true)
@@ -169,6 +176,7 @@ export const AuthProvider = ({ children }) => {
     setAuthLoading(true)
     await signOut(auth)
     setAuthLoading(false)
+    setAppUser(null)
     setUserServices([])
     setUserBookings([])
     setSelectedServices([])
@@ -178,6 +186,7 @@ export const AuthProvider = ({ children }) => {
     <AuthContext.Provider
       value={{
         user,
+        appUser,
         isAuthed: !!user,
         ready,
         authLoading,
@@ -187,10 +196,12 @@ export const AuthProvider = ({ children }) => {
         logout,
         userServices,
         userBookings,
+        setUserBookings,
         selectedServices,
         selectService,
         bookSelected,
         finishService,
+        cancelBooking,
         ongoingCount,
         finishedCount,
       }}
