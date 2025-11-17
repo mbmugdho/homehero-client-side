@@ -10,6 +10,7 @@ import Profile from '../pages/Profile/Profile.jsx'
 import Login from '../pages/Login/Login.jsx'
 import Register from '../pages/Register/Register.jsx'
 import NotFound from '../pages/NotFound/NotFound.jsx'
+import ProviderAddService from '../pages/ProviderAddService/ProviderAddService.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
 import { API_BASE_URL } from '../config'
 
@@ -94,6 +95,14 @@ const router = createBrowserRouter([
         element: (
           <RequireAuth>
             <Profile />
+          </RequireAuth>
+        ),
+      },
+      {
+        path: 'provider/add-service',
+        element: (
+          <RequireAuth>
+            <ProviderAddService />
           </RequireAuth>
         ),
       },

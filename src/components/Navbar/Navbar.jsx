@@ -51,9 +51,6 @@ const Navbar = () => {
       >
         <div className="navbar sticky top-0 border-b border-white/10 text-white glass-tint backdrop-blur-md shadow-[0_1px_10px_hsl(var(--p)/0.3)]">
           <div className="container-x w-full flex items-center justify-between">
-
-
-
             <Link
               to="/"
               className="flex items-center gap-2.5 text-lg sm:text-xl font-extrabold tracking-tight"
@@ -82,7 +79,7 @@ const Navbar = () => {
               <NavLink to="/services" className={topLinkClass}>
                 Services
               </NavLink>
-              <NavLink to="/add-service" className={topLinkClass}>
+              <NavLink to="/provider/add-service" className={topLinkClass}>
                 Add Service
               </NavLink>
               {isAuthed && (
@@ -206,7 +203,7 @@ const Navbar = () => {
             </li>
             <li>
               <NavLink
-                to="/add-service"
+                to="/provider/add-service"
                 className={drawerLinkClass}
                 onClick={closeDrawer}
               >
