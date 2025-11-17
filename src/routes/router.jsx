@@ -13,6 +13,7 @@ import NotFound from '../pages/NotFound/NotFound.jsx'
 import ProviderAddService from '../pages/ProviderAddService/ProviderAddService.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
 import { API_BASE_URL } from '../config'
+import EditProfile from '../pages/EditProfile/EditProfile.jsx'
 
 const RequireAuth = ({ children }) => {
   const { isAuthed, ready } = useAuth()
@@ -97,6 +98,14 @@ const router = createBrowserRouter([
         element: (
           <RequireAuth>
             <Profile />
+          </RequireAuth>
+        ),
+      },
+      {
+        path: 'edit-profile',
+        element: (
+          <RequireAuth>
+            <EditProfile />
           </RequireAuth>
         ),
       },

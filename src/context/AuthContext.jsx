@@ -7,6 +7,7 @@ import {
   signInWithPopup,
   signOut,
   updateProfile,
+  updateEmail,
 } from 'firebase/auth'
 import { API_BASE_URL } from '../config'
 
@@ -198,6 +199,45 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
+  const updateProfileInfo = async ({ name, photoURL, email, phone }) => {
+    if (!user) return { ok: false }
+    try {
+      setAuthLoading(true)
+      if (name || photoURL) {
+        await updateProfile(auth.currentUser, {
+          displayName: name || null,
+          photoURL: photoURL || null,
+        })
+      }
+      if (email && email !== auth.currentUser.email) {
+        try {
+          await updateEmail(auth.currentUser, email)
+        } catch (err) {
+          setAuthLoading(false)
+          if (err?.code === 'auth/requires-recent-login')
+            return { ok: false, code: 'reauth-required' }
+          return { ok: false }
+        }
+      }
+      await fetch(`${API_BASE_URL}/users/${auth.currentUser.uid}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, photoURL, email, phone }),
+      })
+      setUser({ ...auth.currentUser })
+      setAppUser((prev) =>
+        prev
+          ? { ...prev, name, photoURL, email: email || prev.email, phone }
+          : prev
+      )
+      setAuthLoading(false)
+      return { ok: true }
+    } catch {
+      setAuthLoading(false)
+      return { ok: false }
+    }
+  }
+
   const ongoingCount = userServices.filter((s) => s.status === 'ongoing').length
   const finishedCount = userServices.filter(
     (s) => s.status === 'finished'
@@ -266,6 +306,7 @@ export const AuthProvider = ({ children }) => {
         refreshProviderServices,
         updateService,
         deleteService,
+        updateProfileInfo,
       }}
     >
       {children}
