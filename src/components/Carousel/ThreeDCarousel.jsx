@@ -1,9 +1,10 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import React from 'react'
+import { Link } from 'react-router-dom'
+import { motion } from 'framer-motion'
+import { BrushCleaning, Droplets, Zap } from 'lucide-react'
 
-const RADIUS = 280;  
-const DENSITY = 6;  
+const RADIUS = 280
+const DENSITY = 6
 
 const BASE_ITEMS = [
   {
@@ -11,37 +12,28 @@ const BASE_ITEMS = [
     title: 'Cleaning',
     desc: 'Sparkling homes with flexible schedules.',
     to: '/services?cat=Cleaning',
-    icon: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <path d="M3 21h18M7 21l2-8h6l2 8M9 13V6a3 3 0 1 1 6 0v7" />
-      </svg>
-    ),
+    icon: <BrushCleaning />,
   },
   {
     id: 'plumb',
     title: 'Plumbing',
     desc: 'Leaks, installs, and water heaters.',
     to: '/services?cat=Plumbing',
-    icon: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <path d="M3 12h6l3-3 3 3h6M12 9v12" />
-      </svg>
-    ),
+    icon: <Droplets />,
   },
   {
     id: 'elec',
     title: 'Electrical',
     desc: 'Wiring, lighting, smart homes.',
     to: '/services?cat=Electrical',
-    icon: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M13 2 3 14h7v8l11-14h-7z" />
-      </svg>
-    ),
+    icon: <Zap />,
   },
-];
+]
 
-const items = Array.from({ length: DENSITY }, (_, i) => BASE_ITEMS[i % BASE_ITEMS.length]);
+const items = Array.from(
+  { length: DENSITY },
+  (_, i) => BASE_ITEMS[i % BASE_ITEMS.length]
+)
 
 function ServiceCard({ title, desc, to, icon }) {
   return (
@@ -67,11 +59,11 @@ function ServiceCard({ title, desc, to, icon }) {
         </Link>
       </div>
     </motion.div>
-  );
+  )
 }
 
 export default function ThreeDCarousel() {
-  const step = 360 / items.length;
+  const step = 360 / items.length
 
   return (
     <section className="container-x py-2">
@@ -90,7 +82,9 @@ export default function ThreeDCarousel() {
             <div
               key={`${item.id}-${idx}`}
               className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 [transform-style:preserve-3d]"
-              style={{ transform: `rotateY(${idx * step}deg) translateZ(${RADIUS}px)` }}
+              style={{
+                transform: `rotateY(${idx * step}deg) translateZ(${RADIUS}px)`,
+              }}
             >
               <ServiceCard {...item} />
             </div>
@@ -98,5 +92,5 @@ export default function ThreeDCarousel() {
         </div>
       </div>
     </section>
-  );
+  )
 }

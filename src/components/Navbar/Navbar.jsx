@@ -2,6 +2,8 @@ import { useEffect } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { motion } from 'framer-motion'
+import { HousePlus } from 'lucide-react';
+// import logoImg from '../../assets/logo.png'
 
 const topLinkClass = ({ isActive }) =>
   `px-3 py-2 rounded-lg font-medium transition-all duration-200 ${
@@ -55,17 +57,8 @@ const Navbar = () => {
               to="/"
               className="flex items-center gap-2.5 text-lg sm:text-xl font-extrabold tracking-tight"
             >
-              <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-gradient-to-br from-[hsl(var(--p))] to-[hsl(var(--s))] shadow-md">
-                <svg
-                  width="20"
-                  height="20"
-                  fill="none"
-                  stroke="white"
-                  strokeWidth="2.2"
-                >
-                  <path d="M3 10.5 12 3l9 7.5V21a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1v-10.5z" />
-                </svg>
-              </div>
+              {/* <img src={logoImg} alt="HomeHero Logo" className="h-14 w-20" /> */}
+              <HousePlus />
               <span className="text-white font-extrabold">HomeHero</span>
             </Link>
 
