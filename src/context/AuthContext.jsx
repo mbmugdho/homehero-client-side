@@ -17,9 +17,12 @@ export const AuthProvider = ({ children }) => {
   const [appUser, setAppUser] = useState(null)
   const [authLoading, setAuthLoading] = useState(true)
   const [ready, setReady] = useState(false)
+
   const [userServices, setUserServices] = useState([])
   const [userBookings, setUserBookings] = useState([])
   const [selectedServices, setSelectedServices] = useState([])
+
+  const [providerServices, setProviderServices] = useState([])
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (u) => {
@@ -47,12 +50,17 @@ export const AuthProvider = ({ children }) => {
           const b = r1.ok ? await r1.json() : []
           setUserBookings(b)
           setUserServices(b)
+
+          const r2 = await fetch(`${API_BASE_URL}/my-services?uid=${u.uid}`)
+          const my = r2.ok ? await r2.json() : []
+          setProviderServices(my)
         } catch {}
       } else {
         setAppUser(null)
         setUserBookings([])
         setUserServices([])
         setSelectedServices([])
+        setProviderServices([])
       }
     })
     return () => unsub()
@@ -141,6 +149,55 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
+  const refreshProviderServices = async () => {
+    if (!user?.uid) return
+    try {
+      const r = await fetch(`${API_BASE_URL}/my-services?uid=${user.uid}`)
+      const my = r.ok ? await r.json() : []
+      setProviderServices(my)
+    } catch {}
+  }
+
+  const updateService = async (serviceId, patch) => {
+    if (!user) return null
+    try {
+      const res = await fetch(`${API_BASE_URL}/services/${serviceId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...patch,
+          uid: user.uid,
+          userEmail: user.email,
+        }),
+      })
+      if (!res.ok) return null
+      const updated = await res.json()
+      setProviderServices((prev) =>
+        prev.map((s) => (keyOf(s) === keyOf(updated) ? updated : s))
+      )
+      return updated
+    } catch {
+      return null
+    }
+  }
+
+  const deleteService = async (serviceId) => {
+    if (!user) return false
+    try {
+      const res = await fetch(
+        `${API_BASE_URL}/services/${serviceId}?uid=${encodeURIComponent(
+          user.uid
+        )}`,
+        { method: 'DELETE' }
+      )
+      if (!res.ok) return false
+      setProviderServices((prev) => prev.filter((s) => keyOf(s) !== serviceId))
+      return true
+    } catch {
+      return false
+    }
+  }
+
   const ongoingCount = userServices.filter((s) => s.status === 'ongoing').length
   const finishedCount = userServices.filter(
     (s) => s.status === 'finished'
@@ -180,6 +237,7 @@ export const AuthProvider = ({ children }) => {
     setUserServices([])
     setUserBookings([])
     setSelectedServices([])
+    setProviderServices([])
   }
 
   return (
@@ -204,6 +262,10 @@ export const AuthProvider = ({ children }) => {
         cancelBooking,
         ongoingCount,
         finishedCount,
+        providerServices,
+        refreshProviderServices,
+        updateService,
+        deleteService,
       }}
     >
       {children}

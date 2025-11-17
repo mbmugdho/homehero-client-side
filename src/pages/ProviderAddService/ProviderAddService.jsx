@@ -167,7 +167,7 @@ const ProviderAddService = () => {
           <button type="submit" disabled={loading} className="cosmic-btn">
             {loading ? <span className="loading loading-spinner loading-sm" /> : 'Add Service'}
           </button>
-          <button type="button" onClick={() => setForm({ title: '', category: 'Cleaning', hourly_rate: '', description: '', image: '', duration: '', location: '' })} className="cosmic-btn-outline">
+          <button type="button" onClick={() => setForm({ title: '', category: '', hourly_rate: '', description: '', image: '', duration: '', location: '' })} className="cosmic-btn-outline">
             Reset
           </button>
         </div>

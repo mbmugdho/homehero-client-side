@@ -16,11 +16,28 @@ const ServiceDetails = () => {
     return local.toISOString().slice(0, 16)
   }, [])
 
+  const isOwner =
+    (svc?.uid && user?.uid && String(svc.uid) === String(user.uid)) ||
+    (svc?.providerEmail &&
+      user?.email &&
+      String(svc.providerEmail).toLowerCase() ===
+        String(user.email).toLowerCase())
+
   const handleOpen = () => {
     if (!isAuthed) {
       Swal.fire({
         icon: 'info',
         title: 'You need to log in first',
+        confirmButtonColor: '#8C2FA3',
+        background: '#1b0b28',
+        color: '#fff',
+      })
+      return
+    }
+    if (isOwner) {
+      Swal.fire({
+        icon: 'info',
+        title: 'You cannot book your own service',
         confirmButtonColor: '#8C2FA3',
         background: '#1b0b28',
         color: '#fff',
@@ -74,7 +91,12 @@ const ServiceDetails = () => {
                 <span className="text-right">{svc.location}</span>
               </div>
             </div>
-            <button className="cosmic-btn w-full mt-4" onClick={handleOpen}>
+            <button
+              className="cosmic-btn w-full mt-4 disabled:opacity-60 disabled:cursor-not-allowed"
+              onClick={handleOpen}
+              disabled={isOwner}
+              title={isOwner ? 'You cannot book your own service' : ''}
+            >
               Book Now
             </button>
           </aside>

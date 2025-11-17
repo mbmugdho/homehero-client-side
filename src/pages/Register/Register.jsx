@@ -11,6 +11,7 @@ const Register = () => {
   const [form, setForm] = useState({
     name: '',
     email: '',
+    photoURL: '',
     password: '',
     confirm: '',
     terms: false,
@@ -23,6 +24,20 @@ const Register = () => {
       [name]: type === 'checkbox' ? checked : value,
     }))
   }
+
+  const minOk = form.password.length >= 6
+  const upperOk = /[A-Z]/.test(form.password)
+  const lowerOk = /[a-z]/.test(form.password)
+  const pwValid = minOk && upperOk && lowerOk
+  const canSubmit =
+    !authLoading &&
+    form.name &&
+    form.email &&
+    form.password &&
+    form.confirm &&
+    form.terms &&
+    pwValid &&
+    form.password === form.confirm
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -46,13 +61,29 @@ const Register = () => {
       })
       return
     }
+    if (!pwValid) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Password does not meet requirements',
+        html:
+          '<div style="text-align:left">' +
+          '<div>• At least 6 characters</div>' +
+          '<div>• One uppercase letter (A–Z)</div>' +
+          '<div>• One lowercase letter (a–z)</div>' +
+          '</div>',
+        confirmButtonColor: '#8C2FA3',
+        background: '#1b0b28',
+        color: '#fff',
+      })
+      return
+    }
     try {
       await register({
         name: form.name,
         email: form.email,
         password: form.password,
+        photoURL: form.photoURL || undefined,
       })
-
       Swal.fire({
         icon: 'success',
         title: 'Account created',
@@ -146,6 +177,17 @@ const Register = () => {
             className="input input-bordered w-full bg-white/90 text-[hsl(var(--bc))]"
           />
           <label className="block text-white/80 mt-4 mb-2">
+            Photo URL (optional)
+          </label>
+          <input
+            name="photoURL"
+            type="url"
+            placeholder="https://..."
+            value={form.photoURL}
+            onChange={handleChange}
+            className="input input-bordered w-full bg-white/90 text-[hsl(var(--bc))]"
+          />
+          <label className="block text-white/80 mt-4 mb-2">
             Password <span className="text-red-500">*</span>
           </label>
           <input
@@ -156,7 +198,21 @@ const Register = () => {
             value={form.password}
             onChange={handleChange}
             className="input input-bordered w-full bg-white/90 text-[hsl(var(--bc))]"
+            aria-invalid={!pwValid && form.password ? 'true' : 'false'}
           />
+
+          <div className="mt-2 text-xs text-white/80 space-y-1">
+            <div className={minOk ? 'text-green-400' : 'text-white/70'}>
+              • At least 6 characters
+            </div>
+            <div className={upperOk ? 'text-green-400' : 'text-white/70'}>
+              • One uppercase letter (A–Z)
+            </div>
+            <div className={lowerOk ? 'text-green-400' : 'text-white/70'}>
+              • One lowercase letter (a–z)
+            </div>
+          </div>
+
           <label className="block text-white/80 mt-4 mb-2">
             Confirm password <span className="text-red-500">*</span>
           </label>
@@ -168,6 +224,9 @@ const Register = () => {
             value={form.confirm}
             onChange={handleChange}
             className="input input-bordered w-full bg-white/90 text-[hsl(var(--bc))]"
+            aria-invalid={
+              form.confirm && form.password !== form.confirm ? 'true' : 'false'
+            }
           />
 
           <label className="label cursor-pointer justify-start gap-2 mt-4">
@@ -188,7 +247,7 @@ const Register = () => {
 
           <button
             type="submit"
-            disabled={authLoading}
+            disabled={!canSubmit}
             className="cosmic-btn w-full mt-5 disabled:opacity-60"
           >
             {authLoading ? (

@@ -30,8 +30,10 @@ const RequireAuth = ({ children }) => {
   return children
 }
 
-const fetchServices = async () => {
-  const res = await fetch(`${API_BASE_URL}/services`, {
+const fetchServices = async ({ request }) => {
+  const url = new URL(request.url)
+  const qs = url.search || ''
+  const res = await fetch(`${API_BASE_URL}/services${qs}`, {
     headers: { 'Content-Type': 'application/json' },
   })
   if (!res.ok)
