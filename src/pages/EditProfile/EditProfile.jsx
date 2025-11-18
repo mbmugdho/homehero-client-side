@@ -48,6 +48,7 @@ const EditProfile = () => {
         confirmButtonColor: '#8C2FA3',
         background: '#1b0b28',
         color: '#fff',
+        
       })
     }
   }

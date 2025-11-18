@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import Swal from 'sweetalert2'
 import { useAuth } from '../../context/AuthContext'
+import { FaGoogle } from "react-icons/fa";
 
 const Register = () => {
   const { register, loginWithGoogle, authLoading } = useAuth()
@@ -141,9 +142,7 @@ const Register = () => {
             disabled={authLoading}
             className="cosmic-btn-outline w-full flex items-center justify-center gap-2 disabled:opacity-60"
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M21.35 11.1H12v2.9h5.3c-.2 1.3-1.6 3.8-5.3 3.8A6 6 0 1 1 12 6.1c1.7 0 3 .7 3.7 1.3l2.5-2.5A9.5 9.5 0 0 0 12 3a9 9 0 1 0 0 18c5.2 0 8.7-3.6 8.7-8.6 0-.6-.1-1.2-.35-1.3z" />
-            </svg>
+            <FaGoogle />
             Continue with Google
           </button>
         </div>
