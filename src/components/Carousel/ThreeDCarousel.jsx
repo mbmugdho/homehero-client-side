@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 import { BrushCleaning, Droplets, Zap } from 'lucide-react'
 
 const RADIUS = 280
-const DENSITY = 6
+const DENSITY = 7
 
 const BASE_ITEMS = [
   {

@@ -1,16 +1,31 @@
-# React + Vite
+HomeHero — Local Household Service Finder
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Connect with trusted local pros for cleaning, plumbing, electrical, and more. Browse services, view details, book via a friendly modal flow, and manage your bookings. Providers can add, edit, and delete their own services.
 
-Currently, two official plugins are available:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Live Links:
+Client (Frontend): https://your-client.netlify.app
+Server (API): https://your-server.vercel.app
 
-## React Compiler
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Features:
 
-## Expanding the ESLint configuration
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Firebase Authentication:
+Email/Password and Google login; private routes persist on reload
+Booking Flow:
+Book Now opens a modal preview → finalize date/time + price → create booking
+My Bookings table with Cancel (DELETE)
+Provider CRUD:
+Add Service (private), My Services table, Edit (PATCH), Delete (DELETE) with ownership checks
+Filters & Sorting:
+Search, category chips, min/max price, sort by rating or price (server-backed)
+Responsive UI + Animations:
+Mobile/tablet/desktop layouts; Framer Motion transitions
+Theme Toggle:
+Light/Dark cosmic background toggle; buttons/cards/text remain cosmic
+Tech Stack:
+Frontend: React + Vite, Tailwind CSS + DaisyUI, Framer Motion, SweetAlert2, lucide icon, react icon
+Auth: Firebase Authentication
+Backend: Node.js, Express, MongoDB (Atlas)
+Deployment: Netlify (client), Vercel (server)
