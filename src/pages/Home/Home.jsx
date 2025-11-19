@@ -5,6 +5,7 @@ import HeroBanner from '../../components/Banner/HeroBanner'
 import ThreeDCarousel from '../../components/Carousel/ThreeDCarousel'
 import PopularServices from '../../components/PopularServices/PopularServices'
 import CustomerReviews from '../../components/CustomerReview/CustomerReviews'
+import { PageTitle } from '../../usePageTitle'
 
 const fadeUp = {
   hidden: { opacity: 0, y: 40 },
@@ -24,6 +25,10 @@ const fadeUpChild = {
 const Home = () => {
   return (
     <div>
+      <PageTitle
+        title="Home"
+        description="Browse and book trusted services on HomeHero"
+      />
       <HeroBanner />
 
       <motion.section
@@ -112,9 +117,15 @@ const Home = () => {
 
               <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {[
-                  { title: 'Cleaning', desc: 'Deep cleans, move‑outs, regular upkeep' },
+                  {
+                    title: 'Cleaning',
+                    desc: 'Deep cleans, move‑outs, regular upkeep',
+                  },
                   { title: 'Plumbing', desc: 'Leaks, installs, water heaters' },
-                  { title: 'Electrical', desc: 'Wiring, lighting, smart homes' },
+                  {
+                    title: 'Electrical',
+                    desc: 'Wiring, lighting, smart homes',
+                  },
                   { title: 'Gardening', desc: 'Lawn care, trimming, planting' },
                 ].map((cat, idx) => (
                   <motion.div

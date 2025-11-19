@@ -5,7 +5,7 @@ Connect with trusted local pros for cleaning, plumbing, electrical, and more. Br
 
 Live Links:
 Client (Frontend): https://your-client.netlify.app
-Server (API): https://your-server.vercel.app
+Server (API): https://homehero-server-seven.vercel.app/
 
 
 Features:

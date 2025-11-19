@@ -43,7 +43,7 @@ const Footer = () => {
             </a>
           </div>
 
-          <div className="w-full text-center text-xs text-white/40">
+          <div className="w-full text-center text-xs text-white/60">
             © {new Date().getFullYear()} HomeHero. All rights reserved.
             <br />
             <p>

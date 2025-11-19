@@ -2,7 +2,8 @@ import React, { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import Swal from 'sweetalert2'
 import { useAuth } from '../../context/AuthContext'
-import { FaGoogle } from "react-icons/fa";
+import { FaGoogle } from 'react-icons/fa'
+import { PageTitle } from '../../usePageTitle'
 
 const Login = () => {
   const { login, loginWithGoogle, authLoading } = useAuth()
@@ -19,7 +20,6 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      
       await login({ email: form.email, password: form.password })
 
       Swal.fire({
@@ -64,6 +64,8 @@ const Login = () => {
   }
 
   return (
+    <>
+    <PageTitle title="Login" description="Login to your HomeHero account to manage services and bookings" />
     <section className="container-x py-16 grid place-items-center min-h-[70vh]">
       <div className="w-full max-w-md rounded-2xl border border-white/10 bg-white/10 backdrop-blur-xl shadow-xl p-6">
         <h1 className="text-cosmic text-3xl font-extrabold text-center">
@@ -138,6 +140,7 @@ const Login = () => {
         </p>
       </div>
     </section>
+    </>
   )
 }
 

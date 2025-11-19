@@ -2,6 +2,7 @@ import { useLoaderData, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import Swal from 'sweetalert2'
 import { useMemo, useState } from 'react'
+import { PageTitle } from '../../usePageTitle' 
 
 const ServiceDetails = () => {
   const svc = useLoaderData()
@@ -54,6 +55,12 @@ const ServiceDetails = () => {
   }
 
   return (
+
+    <>
+    <PageTitle 
+  title="Details" 
+  description="View detailed information about the selected HomeHero service" 
+/>
     <section className="container-x py-12">
       <div className="card bg-white/10 border border-white/15 text-white shadow-xl overflow-hidden">
         <img
@@ -153,6 +160,7 @@ const ServiceDetails = () => {
         </form>
       </dialog>
     </section>
+    </>
   )
 }
 
