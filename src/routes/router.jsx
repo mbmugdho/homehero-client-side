@@ -73,7 +73,7 @@ const router = createBrowserRouter([
       {
         path: 'services',
         element: <Services />,
-        loader: fetchServices,
+        
         errorElement: <NotFound />,
       },
       {

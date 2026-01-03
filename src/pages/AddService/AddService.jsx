@@ -46,13 +46,13 @@ const AddService = () => {
     if (item) {
       Swal.fire({
         icon: 'success',
-        title: 'Booked',
-        text: `Your booking for ${item.title} is ongoing`,
+        title: 'Booked Successfully!',
+        text: `Your booking for "${item.title}" is confirmed`,
         confirmButtonColor: '#8C2FA3',
         background: '#1b0b28',
         color: '#fff',
       })
-      navigate('/my-bookings')
+      navigate('/dashboard/bookings') // ✅ Fixed: Redirect to dashboard
     }
   }
 

@@ -1,8 +1,9 @@
-import { useLoaderData, useNavigation, useSearchParams } from 'react-router-dom'
+import { useSearchParams } from 'react-router-dom'
 import ServiceCard from '../../components/ServiceCard/ServiceCard'
 import Pagination from '../../components/Pagination/Pagination'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { PageTitle } from '../../usePageTitle'
+import { API_BASE_URL } from '../../config'
 
 const categories = [
   'All',
@@ -25,10 +26,9 @@ const categories = [
 const ITEMS_PER_PAGE = 6
 
 const Services = () => {
-  const data = useLoaderData()
-  const navigation = useNavigation()
-  const loading = navigation.state === 'loading'
   const [params, setParams] = useSearchParams()
+  const [data, setData] = useState([])
+  const [loading, setLoading] = useState(true)
 
   const q = params.get('search') || ''
   const cat = params.get('category') || 'All'
@@ -41,6 +41,34 @@ const Services = () => {
   const [minPrice, setMinPrice] = useState(min)
   const [maxPrice, setMaxPrice] = useState(max)
   const [currentPage, setCurrentPage] = useState(parseInt(pageParam, 10))
+
+  // Fetch data when filters change
+  useEffect(() => {
+    const fetchServices = async () => {
+      setLoading(true)
+      try {
+        const queryParams = new URLSearchParams()
+        if (q) queryParams.set('search', q)
+        if (cat && cat !== 'All') queryParams.set('category', cat)
+        if (min) queryParams.set('minPrice', min)
+        if (max) queryParams.set('maxPrice', max)
+        if (sort) queryParams.set('sort', sort)
+
+        const res = await fetch(`${API_BASE_URL}/services?${queryParams}`)
+        if (res.ok) {
+          const result = await res.json()
+          setData(result)
+        }
+      } catch (error) {
+        console.error('Failed to fetch services:', error)
+        setData([])
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchServices()
+  }, [q, cat, min, max, sort])
 
   const updateParams = (updates) => {
     const next = new URLSearchParams(params)
@@ -88,6 +116,7 @@ const Services = () => {
 
   const rows = useMemo(() => data || [], [data])
 
+  // Pagination logic
   const totalPages = Math.ceil(rows.length / ITEMS_PER_PAGE)
   const paginatedRows = useMemo(() => {
     const start = (currentPage - 1) * ITEMS_PER_PAGE
@@ -106,6 +135,7 @@ const Services = () => {
           Find services
         </h1>
 
+        {/* Filters */}
         <div className="card bg-white/10 border border-white/15 text-white shadow-xl p-4 mb-4">
           <div className="grid gap-3 md:grid-cols-[1fr_1fr_1fr_auto]">
             <form onSubmit={onSearch} className="flex gap-2">
@@ -159,9 +189,10 @@ const Services = () => {
           </div>
         </div>
 
+        {/* Category Pills */}
         <div className="flex gap-2 overflow-x-auto pb-2 mb-4 scrollbar-hide">
           {categories.map((c) => {
-            const active = cat === c
+            const active = cat === c || (c === 'All' && !cat)
             return (
               <button
                 key={c}
@@ -176,6 +207,7 @@ const Services = () => {
           })}
         </div>
 
+        {/* Results Count */}
         {!loading && rows.length > 0 && (
           <p className="text-white/60 text-sm mb-4">
             Showing {paginatedRows.length} of {rows.length} services
@@ -183,24 +215,35 @@ const Services = () => {
           </p>
         )}
 
+        {/* Service Cards */}
         {loading ? (
           <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             {[...Array(6)].map((_, i) => (
               <div
                 key={i}
-                className="card bg-white/10 border border-white/15 text-white shadow-xl p-4"
+                className="card bg-white/10 border border-white/15 text-white shadow-xl overflow-hidden"
               >
-                <div className="skeleton w-full h-40 mb-3 bg-white/10" />
-                <div className="skeleton h-5 w-2/3 mb-2 bg-white/10" />
-                <div className="skeleton h-4 w-1/2 mb-2 bg-white/10" />
-                <div className="skeleton h-9 w-32 bg-white/10" />
+                <div className="skeleton w-full h-44 bg-white/10" />
+                <div className="p-4 space-y-3">
+                  <div className="skeleton h-5 w-3/4 bg-white/10" />
+                  <div className="skeleton h-4 w-full bg-white/10" />
+                  <div className="skeleton h-4 w-1/2 bg-white/10" />
+                  <div className="flex gap-2 mt-4">
+                    <div className="skeleton h-10 w-28 bg-white/10 rounded-full" />
+                    <div className="skeleton h-10 w-28 bg-white/10 rounded-full" />
+                  </div>
+                </div>
               </div>
             ))}
           </div>
         ) : rows.length === 0 ? (
           <div className="text-center py-16">
+            <div className="text-6xl mb-4">🔍</div>
             <p className="text-white/60 text-lg">No services found.</p>
-            <button onClick={onReset} className="cosmic-btn mt-4">
+            <p className="text-white/40 text-sm mt-2">
+              Try adjusting your filters
+            </p>
+            <button onClick={onReset} className="cosmic-btn mt-6">
               Clear Filters
             </button>
           </div>
