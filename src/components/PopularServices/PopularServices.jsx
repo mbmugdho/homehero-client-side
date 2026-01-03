@@ -30,7 +30,7 @@ const PopularServices = () => {
   }
 
   return (
-    <section className="container-x py-2">
+    <section className="container-x ">
       <header className="mb-6 text-center">
         <h2 className="text-cosmic text-3xl sm:text-4xl font-extrabold">
           Popular Services

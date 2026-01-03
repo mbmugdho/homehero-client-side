@@ -1,5 +1,6 @@
 import { useLoaderData, useNavigation, useSearchParams } from 'react-router-dom'
 import ServiceCard from '../../components/ServiceCard/ServiceCard'
+import Pagination from '../../components/Pagination/Pagination'
 import { useMemo, useState } from 'react'
 import { PageTitle } from '../../usePageTitle'
 
@@ -21,6 +22,8 @@ const categories = [
   'Education',
 ]
 
+const ITEMS_PER_PAGE = 6
+
 const Services = () => {
   const data = useLoaderData()
   const navigation = useNavigation()
@@ -32,10 +35,12 @@ const Services = () => {
   const min = params.get('minPrice') || ''
   const max = params.get('maxPrice') || ''
   const sort = params.get('sort') || ''
+  const pageParam = params.get('page') || '1'
 
   const [searchText, setSearchText] = useState(q)
   const [minPrice, setMinPrice] = useState(min)
   const [maxPrice, setMaxPrice] = useState(max)
+  const [currentPage, setCurrentPage] = useState(parseInt(pageParam, 10))
 
   const updateParams = (updates) => {
     const next = new URLSearchParams(params)
@@ -48,21 +53,47 @@ const Services = () => {
 
   const onSearch = (e) => {
     e.preventDefault()
-    updateParams({ search: searchText })
+    setCurrentPage(1)
+    updateParams({ search: searchText, page: '1' })
   }
 
   const onApplyPrice = () => {
-    updateParams({ minPrice, maxPrice })
+    setCurrentPage(1)
+    updateParams({ minPrice, maxPrice, page: '1' })
   }
 
   const onReset = () => {
     setSearchText('')
     setMinPrice('')
     setMaxPrice('')
+    setCurrentPage(1)
     setParams({}, { replace: true })
   }
 
+  const handleCategoryChange = (c) => {
+    setCurrentPage(1)
+    updateParams({ category: c === 'All' ? '' : c, page: '1' })
+  }
+
+  const handleSortChange = (value) => {
+    setCurrentPage(1)
+    updateParams({ sort: value, page: '1' })
+  }
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page)
+    updateParams({ page: page.toString() })
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
   const rows = useMemo(() => data || [], [data])
+
+  const totalPages = Math.ceil(rows.length / ITEMS_PER_PAGE)
+  const paginatedRows = useMemo(() => {
+    const start = (currentPage - 1) * ITEMS_PER_PAGE
+    const end = start + ITEMS_PER_PAGE
+    return rows.slice(start, end)
+  }, [rows, currentPage])
 
   return (
     <div>
@@ -76,7 +107,7 @@ const Services = () => {
         </h1>
 
         <div className="card bg-white/10 border border-white/15 text-white shadow-xl p-4 mb-4">
-          <div className="grid gap-3 md:grid-cols-[1fr_1fr_1fr_1fr_auto]">
+          <div className="grid gap-3 md:grid-cols-[1fr_1fr_1fr_auto]">
             <form onSubmit={onSearch} className="flex gap-2">
               <input
                 className="input input-bordered w-full bg-white/90 text-[hsl(var(--bc))]"
@@ -92,7 +123,7 @@ const Services = () => {
                 type="number"
                 min="0"
                 className="input input-bordered w-full bg-white/90 text-[hsl(var(--bc))]"
-                placeholder="Min price"
+                placeholder="Min $"
                 value={minPrice}
                 onChange={(e) => setMinPrice(e.target.value)}
               />
@@ -100,7 +131,7 @@ const Services = () => {
                 type="number"
                 min="0"
                 className="input input-bordered w-full bg-white/90 text-[hsl(var(--bc))]"
-                placeholder="Max price"
+                placeholder="Max $"
                 value={maxPrice}
                 onChange={(e) => setMaxPrice(e.target.value)}
               />
@@ -112,40 +143,45 @@ const Services = () => {
               </button>
             </div>
 
-            <div className="flex">
-              <select
-                value={sort}
-                onChange={(e) => updateParams({ sort: e.target.value })}
-                className="select select-bordered w-full bg-white/90 text-[hsl(var(--bc))]"
-              >
-                <option value="">Sort</option>
-                <option value="rating">Top rated</option>
-                <option value="price">Price (desc)</option>
-              </select>
-            </div>
+            <select
+              value={sort}
+              onChange={(e) => handleSortChange(e.target.value)}
+              className="select select-bordered w-full bg-white/90 text-[hsl(var(--bc))]"
+            >
+              <option value="">Sort by</option>
+              <option value="rating">Top rated</option>
+              <option value="price">Price (high to low)</option>
+            </select>
 
-            <div className="flex items-center justify-end">
-              <button className="cosmic-btn-outline" onClick={onReset}>
-                Reset
-              </button>
-            </div>
+            <button className="cosmic-btn-outline" onClick={onReset}>
+              Reset
+            </button>
           </div>
         </div>
 
-        <div className="flex gap-2 overflow-x-auto pb-2 mb-4">
+        <div className="flex gap-2 overflow-x-auto pb-2 mb-4 scrollbar-hide">
           {categories.map((c) => {
             const active = cat === c
             return (
               <button
                 key={c}
-                className={active ? 'cosmic-btn' : 'cosmic-btn-outline'}
-                onClick={() => updateParams({ category: c === 'All' ? '' : c })}
+                className={`${
+                  active ? 'cosmic-btn' : 'cosmic-btn-outline'
+                } whitespace-nowrap`}
+                onClick={() => handleCategoryChange(c)}
               >
                 {c}
               </button>
             )
           })}
         </div>
+
+        {!loading && rows.length > 0 && (
+          <p className="text-white/60 text-sm mb-4">
+            Showing {paginatedRows.length} of {rows.length} services
+            {currentPage > 1 && ` (Page ${currentPage} of ${totalPages})`}
+          </p>
+        )}
 
         {loading ? (
           <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
@@ -154,21 +190,35 @@ const Services = () => {
                 key={i}
                 className="card bg-white/10 border border-white/15 text-white shadow-xl p-4"
               >
-                <div className="skeleton w-full h-40 mb-3" />
-                <div className="skeleton h-5 w-2/3 mb-2" />
-                <div className="skeleton h-4 w-1/2 mb-2" />
-                <div className="skeleton h-9 w-32" />
+                <div className="skeleton w-full h-40 mb-3 bg-white/10" />
+                <div className="skeleton h-5 w-2/3 mb-2 bg-white/10" />
+                <div className="skeleton h-4 w-1/2 mb-2 bg-white/10" />
+                <div className="skeleton h-9 w-32 bg-white/10" />
               </div>
             ))}
           </div>
         ) : rows.length === 0 ? (
-          <p className="text-white text-center mt-6">No services found.</p>
-        ) : (
-          <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-            {rows.map((svc) => (
-              <ServiceCard key={svc._id || svc.id} service={svc} />
-            ))}
+          <div className="text-center py-16">
+            <p className="text-white/60 text-lg">No services found.</p>
+            <button onClick={onReset} className="cosmic-btn mt-4">
+              Clear Filters
+            </button>
           </div>
+        ) : (
+          <>
+            <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+              {paginatedRows.map((svc) => (
+                <ServiceCard key={svc._id || svc.id} service={svc} />
+              ))}
+            </div>
+
+            {/* Pagination */}
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
+          </>
         )}
       </section>
     </div>
