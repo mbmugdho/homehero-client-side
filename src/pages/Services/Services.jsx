@@ -42,7 +42,6 @@ const Services = () => {
   const [maxPrice, setMaxPrice] = useState(max)
   const [currentPage, setCurrentPage] = useState(parseInt(pageParam, 10))
 
-  // Fetch data when filters change
   useEffect(() => {
     const fetchServices = async () => {
       setLoading(true)
@@ -116,7 +115,6 @@ const Services = () => {
 
   const rows = useMemo(() => data || [], [data])
 
-  // Pagination logic
   const totalPages = Math.ceil(rows.length / ITEMS_PER_PAGE)
   const paginatedRows = useMemo(() => {
     const start = (currentPage - 1) * ITEMS_PER_PAGE
@@ -135,7 +133,6 @@ const Services = () => {
           Find services
         </h1>
 
-        {/* Filters */}
         <div className="card bg-white/10 border border-white/15 text-white shadow-xl p-4 mb-4">
           <div className="grid gap-3 md:grid-cols-[1fr_1fr_1fr_auto]">
             <form onSubmit={onSearch} className="flex gap-2">
@@ -189,7 +186,6 @@ const Services = () => {
           </div>
         </div>
 
-        {/* Category Pills */}
         <div className="flex gap-2 overflow-x-auto pb-2 mb-4 scrollbar-hide">
           {categories.map((c) => {
             const active = cat === c || (c === 'All' && !cat)
@@ -207,7 +203,6 @@ const Services = () => {
           })}
         </div>
 
-        {/* Results Count */}
         {!loading && rows.length > 0 && (
           <p className="text-white/60 text-sm mb-4">
             Showing {paginatedRows.length} of {rows.length} services
@@ -215,7 +210,6 @@ const Services = () => {
           </p>
         )}
 
-        {/* Service Cards */}
         {loading ? (
           <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
             {[...Array(6)].map((_, i) => (
@@ -255,7 +249,6 @@ const Services = () => {
               ))}
             </div>
 
-            {/* Pagination */}
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages}

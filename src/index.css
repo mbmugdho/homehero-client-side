@@ -153,4 +153,30 @@
     transition-duration: 1ms !important;
     scroll-behavior: auto !important;
   }
+  
+  /* Custom Cursor Styles */
+  @media (hover: hover) and (pointer: fine) {
+    * {
+      cursor: none !important;
+    }
+
+    input,
+    textarea,
+    select {
+      cursor: text !important;
+    }
+
+    input[type='submit'],
+    input[type='button'],
+    input[type='checkbox'],
+    input[type='radio'] {
+      cursor: none !important;
+    }
+  }
+
+  @media (hover: none) or (pointer: coarse) {
+    * {
+      cursor: auto !important;
+    }
+  }
 }

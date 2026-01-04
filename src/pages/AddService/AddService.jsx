@@ -52,7 +52,7 @@ const AddService = () => {
         background: '#1b0b28',
         color: '#fff',
       })
-      navigate('/dashboard/bookings') // ✅ Fixed: Redirect to dashboard
+      navigate('/dashboard/bookings') 
     }
   }
 
